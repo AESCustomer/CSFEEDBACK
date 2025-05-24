@@ -70,17 +70,17 @@
 
   <script>
     // ====================================================================================
-    // 1. Firebase Configuration
+    // 1. Firebase Configuration (อัปเดตด้วยข้อมูลของคุณ)
     // ====================================================================================
     const firebaseConfig = {
-      apiKey: "AIzaSyBANw4vH3rmR3O2hfFkVIw-2uFpGJanGZc",
-      authDomain: "feedback-e835c.firebaseapp.com",
-      databaseURL: "https://feedback-e835c-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "feedback-e835c",
-      storageBucket: "feedback-e835c.appspot.com", // แก้ไขจาก .firebasestorage.app เป็น .appspot.com
-      messagingSenderId: "303971773875",
-      appId: "1:303971773875:web:00fd8d17aaa5c98e46efc6",
-      measurementId: "G-5RYZK13L4V" // เพิ่ม measurementId ถ้ามี
+      apiKey: "AIzaSyD9fCwQ8CiJ_sCP4oL0DpGGDs4A-wCLvc8",
+      authDomain: "feed-e179b.firebaseapp.com",
+      databaseURL: "https://feed-e179b-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "feed-e179b",
+      storageBucket: "feed-e179b.appspot.com", // แก้ไขตามปกติ: projectId + .appspot.com
+      messagingSenderId: "790012789407",
+      appId: "1:790012789407:web:d48dc0a4e77edcf8a4d8aa",
+      measurementId: "G-8QCJTFQGMQ"
     };
 
     // 2. Initialize Firebase
@@ -98,37 +98,32 @@
       submitButton.disabled = true;
       submitButton.textContent = 'กำลังส่งข้อมูล...';
 
-      // 3. รวบรวมข้อมูลจากฟอร์ม
+      // 3. รวบรวมข้อมูลจากฟอร์ม (ใช้ Key ภาษาไทยตามที่คุณต้องการ)
       const formDataToSubmit = {
-        project: document.getElementById('project').value,
-        houseNumber: document.getElementById('house-number').value, // id คือ house-number
-        serviceQuality: document.getElementById('service-quality').value,
-        communication: document.getElementById('communication').value,
-        repairQuality: document.getElementById('repair-quality').value,
-        comments: document.getElementById('comments').value,
-        submissionTimestamp: new Date().toISOString(), // เวลาจาก Client
-        // ถ้าต้องการเวลาจาก Server Firebase ให้เพิ่ม:
-        // serverTimestamp: firebase.database.ServerValue.TIMESTAMP
+        "โครงการ": document.getElementById('project').value,
+        "บ้านเลขที่": document.getElementById('house-number').value,
+        "คุณภาพบริการ": document.getElementById('service-quality').value,
+        "การสื่อสารชัดเจน": document.getElementById('communication').value,
+        "คุณภาพการซ่อม": document.getElementById('repair-quality').value,
+        "ข้อเสนอแนะ": document.getElementById('comments').value,
+        "เวลาที่ส่ง(Client)": new Date().toISOString()
       };
 
       console.log('ข้อมูลที่จะส่งไป Firebase:', formDataToSubmit);
 
       // 4. ส่งข้อมูลไปยัง Firebase Realtime Database
-      // เราจะสร้าง child node ชื่อ 'submissions' แล้ว push ข้อมูลใหม่เข้าไป
-      // push() จะสร้าง unique ID สำหรับแต่ละ submission โดยอัตโนมัติ
-      const submissionsRef = database.ref('submissions'); // สร้าง reference ไปยัง path 'submissions'
-      submissionsRef.push(formDataToSubmit) // .push() จะสร้าง ID ใหม่ให้แต่ละรายการ
+      const submissionsRef = database.ref('submissions');
+      submissionsRef.push(formDataToSubmit)
         .then(() => {
           console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว!');
           alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!');
-          form.reset(); // ล้างข้อมูลในฟอร์ม
+          form.reset();
         })
         .catch(error => {
           console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูลไป Firebase:', error);
           alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + error.message);
         })
         .finally(() => {
-          // เมื่อทุกอย่างเสร็จสิ้น (ไม่ว่าจะสำเร็จหรือ error)
           submitButton.disabled = false;
           submitButton.textContent = originalButtonText;
         });
