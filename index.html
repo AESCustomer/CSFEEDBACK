@@ -1,93 +1,26 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>แบบประเมินเจ้าหน้าที่บริการหลังการขาย (Fetch FormData - Loading)</title>
+  <title>แบบประเมิน (Firebase)</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-    body {
-      font-family: 'Montserrat', 'Noto Sans Thai', sans-serif;
-      background-color: #f0f2f5;
-      margin: 0;
-      padding: 20px;
-      font-size: 18px;
-    }
-    .form-container {
-      max-width: 600px;
-      margin: auto;
-      background: #ffffff;
-      padding: 35px 25px;
-      border-radius: 20px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    }
-    .logo {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-    .logo img {
-      max-width: 220px;
-      height: auto;
-    }
-    h2 {
-      text-align: center;
-      font-size: 22px;
-      font-weight: 600;
-      margin-bottom: 25px;
-    }
-    label {
-      display: block;
-      margin-top: 20px;
-      margin-bottom: 8px;
-      font-weight: 600;
-    }
-    input, select, textarea {
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 17px;
-      font-family: 'Noto Sans Thai', sans-serif;
-      background-color: #fdfdfd;
-    }
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-    button {
-      background-color: #000000;
-      color: white;
-      font-size: 18px;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      margin-top: 30px;
-      width: 100%;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #333333;
-    }
-    /* เพิ่ม CSS สำหรับปุ่มเมื่อถูก disable */
-    button:disabled {
-      background-color: #cccccc;
-      color: #666666;
-      cursor: not-allowed;
-    }
-    @media (max-width: 600px) {
-      body { padding: 10px; }
-      .form-container { padding: 25px 20px; }
-      h2 { font-size: 20px; }
-      input, select, textarea, button { font-size: 16px; }
-      .logo img { max-width: 180px; }
-    }
+    * { box-sizing: border-box; }
+    body { font-family: 'Montserrat', 'Noto Sans Thai', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; font-size: 18px; }
+    .form-container { max-width: 600px; margin: auto; background: #ffffff; padding: 35px 25px; border-radius: 20px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); }
+    .logo { text-align: center; margin-bottom: 25px; }
+    .logo img { max-width: 220px; height: auto; }
+    h2 { text-align: center; font-size: 22px; font-weight: 600; margin-bottom: 25px; }
+    label { display: block; margin-top: 20px; margin-bottom: 8px; font-weight: 600; }
+    input, select, textarea { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #ccc; font-size: 17px; font-family: 'Noto Sans Thai', sans-serif; background-color: #fdfdfd; }
+    textarea { resize: vertical; min-height: 100px; }
+    button { background-color: #000000; color: white; font-size: 18px; padding: 14px; border: none; border-radius: 12px; margin-top: 30px; width: 100%; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease; }
+    button:hover { background-color: #333333; }
+    button:disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; }
+    @media (max-width: 600px) { body { padding: 10px; } .form-container { padding: 25px 20px; } h2 { font-size: 20px; } input, select, textarea, button { font-size: 16px; } .logo img { max-width: 180px; } }
   </style>
 </head>
 <body>
@@ -132,70 +65,73 @@
     </form>
   </div>
 
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
   <script>
-    // ***** กรุณาใส่ URL ของ Google Apps Script ที่ Deploy แล้วของคุณที่นี่ *****
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxEzhMWxlSTBZ7lJKiOGUbjkumWyFpwBs3amNV0-XBPUtEGxEgqyLnLYDK1e2I_Zofx/exec';
+    // ====================================================================================
+    // 1. Firebase Configuration
+    // ====================================================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBANw4vH3rmR3O2hfFkVIw-2uFpGJanGZc",
+      authDomain: "feedback-e835c.firebaseapp.com",
+      databaseURL: "https://feedback-e835c-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "feedback-e835c",
+      storageBucket: "feedback-e835c.appspot.com", // แก้ไขจาก .firebasestorage.app เป็น .appspot.com
+      messagingSenderId: "303971773875",
+      appId: "1:303971773875:web:00fd8d17aaa5c98e46efc6",
+      measurementId: "G-5RYZK13L4V" // เพิ่ม measurementId ถ้ามี
+    };
+
+    // 2. Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database(); // อ้างอิงไปยัง Realtime Database
+
+    // ส่วนที่เหลือคือ JavaScript สำหรับจัดการฟอร์ม
     const form = document.getElementById('feedback-form');
-    const submitButton = form.querySelector('button[type="submit"]'); // ดึงปุ่ม submit
-    const originalButtonText = submitButton.textContent; // เก็บข้อความเดิมของปุ่ม
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalButtonText = submitButton.textContent;
 
     form.addEventListener('submit', e => {
-      e.preventDefault(); // ป้องกันการ submit ฟอร์มแบบปกติ
+      e.preventDefault(); // ป้องกันการ submit ฟอร์มแบบปกติของ HTML
 
-      // ปิดการใช้งานปุ่มและเปลี่ยนข้อความ
       submitButton.disabled = true;
       submitButton.textContent = 'กำลังส่งข้อมูล...';
 
-      const params = new URLSearchParams();
-      params.append('project', document.getElementById('project').value);
-      params.append('houseNumber', document.getElementById('house-number').value);
-      params.append('serviceQuality', document.getElementById('service-quality').value);
-      params.append('communication', document.getElementById('communication').value);
-      params.append('repairQuality', document.getElementById('repair-quality').value);
-      params.append('comments', document.getElementById('comments').value);
-      params.append('submissionTime', new Date().toISOString());
+      // 3. รวบรวมข้อมูลจากฟอร์ม
+      const formDataToSubmit = {
+        project: document.getElementById('project').value,
+        houseNumber: document.getElementById('house-number').value, // id คือ house-number
+        serviceQuality: document.getElementById('service-quality').value,
+        communication: document.getElementById('communication').value,
+        repairQuality: document.getElementById('repair-quality').value,
+        comments: document.getElementById('comments').value,
+        submissionTimestamp: new Date().toISOString(), // เวลาจาก Client
+        // ถ้าต้องการเวลาจาก Server Firebase ให้เพิ่ม:
+        // serverTimestamp: firebase.database.ServerValue.TIMESTAMP
+      };
 
-      console.log('ข้อมูลที่กำลังจะส่ง (URLSearchParams):', params.toString());
+      console.log('ข้อมูลที่จะส่งไป Firebase:', formDataToSubmit);
 
-      fetch(scriptURL, {
-        method: 'POST',
-        body: params
-      })
-      .then(response => {
-        console.log("Raw response:", response);
-        if (!response.ok) {
-          return response.text().then(text => {
-            console.error('Server response (not ok):', text);
-            try {
-              const errData = JSON.parse(text);
-              throw new Error("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: " + response.status + ". " + (errData.message || text));
-            } catch (parseError) {
-              throw new Error("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: " + response.status + ". " + text);
-            }
-          });
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Success data from script:', data);
-        if (data && data.result === "success") {
-          alert("ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!");
-          form.reset();
-        } else {
-          alert("ส่งแบบประเมินสำเร็จ แต่มีการตอบกลับที่ไม่คาดคิด: " + JSON.stringify(data));
-          form.reset();
-        }
-      })
-      .catch(error => {
-        console.error('Error during fetch:', error.message);
-        alert("เกิดข้อผิดพลาดในการส่งแบบประเมิน: " + error.message);
-      })
-      .finally(() => {
-        // เมื่อ fetch เสร็จสิ้น (ไม่ว่าจะสำเร็จหรือ error)
-        // ให้เปิดใช้งานปุ่มและคืนข้อความเดิม
-        submitButton.disabled = false;
-        submitButton.textContent = originalButtonText;
-      });
+      // 4. ส่งข้อมูลไปยัง Firebase Realtime Database
+      // เราจะสร้าง child node ชื่อ 'submissions' แล้ว push ข้อมูลใหม่เข้าไป
+      // push() จะสร้าง unique ID สำหรับแต่ละ submission โดยอัตโนมัติ
+      const submissionsRef = database.ref('submissions'); // สร้าง reference ไปยัง path 'submissions'
+      submissionsRef.push(formDataToSubmit) // .push() จะสร้าง ID ใหม่ให้แต่ละรายการ
+        .then(() => {
+          console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว!');
+          alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!');
+          form.reset(); // ล้างข้อมูลในฟอร์ม
+        })
+        .catch(error => {
+          console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูลไป Firebase:', error);
+          alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + error.message);
+        })
+        .finally(() => {
+          // เมื่อทุกอย่างเสร็จสิ้น (ไม่ว่าจะสำเร็จหรือ error)
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
+        });
     });
   </script>
 </body>
