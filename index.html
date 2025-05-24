@@ -115,8 +115,8 @@
       const submissionsRef = database.ref('submissions');
       submissionsRef.push(formDataToSubmit)
         .then(() => {
-          console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว!');
-          alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!');
+          console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว');
+          alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ');
           form.reset();
         })
         .catch(error => {
