@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>แบบประเมินเจ้าหน้าที่หลังการขาย</title>
+  <title>แบบประเมิน (Firebase)</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
 
@@ -99,15 +99,14 @@
       submitButton.textContent = 'กำลังส่งข้อมูล...';
 
       // 3. รวบรวมข้อมูลจากฟอร์ม
-     const formDataToSubmit = {
-  "โครงการ": document.getElementById('project').value, // ใช้ "" ครอบถ้ามีเว้นวรรคหรืออักขระพิเศษ
-  "บ้านเลขที่": document.getElementById('house-number').value,
-  "คุณภาพบริการ": document.getElementById('service-quality').value,
-  "การสื่อสารชัดเจน": document.getElementById('communication').value,
-  "คุณภาพการซ่อม": document.getElementById('repair-quality').value,
-  "ข้อเสนอแนะ": document.getElementById('comments').value,
-  "เวลาที่ส่งแบบประเมิน(ลูกบ้าน)": new Date().toISOString() // เปลี่ยนชื่อ Key ของ Timestamp ด้วยก็ได้ครับ
-}; // เวลาจาก Client
+      const formDataToSubmit = {
+        project: document.getElementById('project').value,
+        houseNumber: document.getElementById('house-number').value, // id คือ house-number
+        serviceQuality: document.getElementById('service-quality').value,
+        communication: document.getElementById('communication').value,
+        repairQuality: document.getElementById('repair-quality').value,
+        comments: document.getElementById('comments').value,
+        submissionTimestamp: new Date().toISOString(), // เวลาจาก Client
         // ถ้าต้องการเวลาจาก Server Firebase ให้เพิ่ม:
         // serverTimestamp: firebase.database.ServerValue.TIMESTAMP
       };
@@ -120,8 +119,8 @@
       const submissionsRef = database.ref('submissions'); // สร้าง reference ไปยัง path 'submissions'
       submissionsRef.push(formDataToSubmit) // .push() จะสร้าง ID ใหม่ให้แต่ละรายการ
         .then(() => {
-          console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว');
-          alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ');
+          console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว!');
+          alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!');
           form.reset(); // ล้างข้อมูลในฟอร์ม
         })
         .catch(error => {
