@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>แบบประเมินเจ้าหน้าที่บริการหลังการขาย (Fetch FormData)</title>
+  <title>แบบประเมินเจ้าหน้าที่บริการหลังการขาย (Fetch FormData - Loading)</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
 
@@ -75,7 +75,12 @@
     button:hover {
       background-color: #333333;
     }
-    /* ไม่มี CSS สำหรับ button:disabled ที่นี่ เพราะเราไม่ได้จัดการ loading state */
+    /* เพิ่ม CSS สำหรับปุ่มเมื่อถูก disable */
+    button:disabled {
+      background-color: #cccccc;
+      color: #666666;
+      cursor: not-allowed;
+    }
     @media (max-width: 600px) {
       body { padding: 10px; }
       .form-container { padding: 25px 20px; }
@@ -100,7 +105,9 @@
       </select>
 
       <label for="house-number">บ้านเลขที่:</label>
-      <input type="text" id="house-number" name="houseNumber" required> <label for="service-quality">1. คุณภาพการบริการ:</label>
+      <input type="text" id="house-number" name="houseNumber" required>
+
+      <label for="service-quality">1. คุณภาพการบริการ:</label>
       <select id="service-quality" name="serviceQuality" required>
         <option value="">เลือกคะแนน</option>
         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
@@ -129,44 +136,45 @@
     // ***** กรุณาใส่ URL ของ Google Apps Script ที่ Deploy แล้วของคุณที่นี่ *****
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxEzhMWxlSTBZ7lJKiOGUbjkumWyFpwBs3amNV0-XBPUtEGxEgqyLnLYDK1e2I_Zofx/exec';
     const form = document.getElementById('feedback-form');
+    const submitButton = form.querySelector('button[type="submit"]'); // ดึงปุ่ม submit
+    const originalButtonText = submitButton.textContent; // เก็บข้อความเดิมของปุ่ม
 
     form.addEventListener('submit', e => {
       e.preventDefault(); // ป้องกันการ submit ฟอร์มแบบปกติ
 
-      // สร้างข้อมูลแบบ Form Data (URLSearchParams)
-      // ชื่อ key (project, houseNumber, etc.) ต้องตรงกับที่ Apps Script คาดหวังใน e.parameter
+      // ปิดการใช้งานปุ่มและเปลี่ยนข้อความ
+      submitButton.disabled = true;
+      submitButton.textContent = 'กำลังส่งข้อมูล...';
+
       const params = new URLSearchParams();
       params.append('project', document.getElementById('project').value);
-      params.append('houseNumber', document.getElementById('house-number').value); // id คือ house-number
+      params.append('houseNumber', document.getElementById('house-number').value);
       params.append('serviceQuality', document.getElementById('service-quality').value);
       params.append('communication', document.getElementById('communication').value);
       params.append('repairQuality', document.getElementById('repair-quality').value);
       params.append('comments', document.getElementById('comments').value);
-      params.append('submissionTime', new Date().toISOString()); // ส่งเวลาจาก Client ไปด้วย (ถ้าต้องการ)
+      params.append('submissionTime', new Date().toISOString());
 
       console.log('ข้อมูลที่กำลังจะส่ง (URLSearchParams):', params.toString());
 
       fetch(scriptURL, {
         method: 'POST',
-        // ไม่ต้องตั้ง Content-Type header เอง เบราว์เซอร์จะตั้งเป็น 'application/x-www-form-urlencoded'
-        // เมื่อ body เป็น URLSearchParams
         body: params
       })
       .then(response => {
         console.log("Raw response:", response);
         if (!response.ok) {
-          // ถ้า Server ตอบกลับ error
           return response.text().then(text => {
             console.error('Server response (not ok):', text);
             try {
-              const errData = JSON.parse(text); // พยายาม parse error JSON จาก Apps Script
+              const errData = JSON.parse(text);
               throw new Error("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: " + response.status + ". " + (errData.message || text));
             } catch (parseError) {
               throw new Error("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: " + response.status + ". " + text);
             }
           });
         }
-        return response.json(); // คาดหวัง JSON จาก Apps Script ({result: "success"})
+        return response.json();
       })
       .then(data => {
         console.log('Success data from script:', data);
@@ -181,6 +189,12 @@
       .catch(error => {
         console.error('Error during fetch:', error.message);
         alert("เกิดข้อผิดพลาดในการส่งแบบประเมิน: " + error.message);
+      })
+      .finally(() => {
+        // เมื่อ fetch เสร็จสิ้น (ไม่ว่าจะสำเร็จหรือ error)
+        // ให้เปิดใช้งานปุ่มและคืนข้อความเดิม
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText;
       });
     });
   </script>
