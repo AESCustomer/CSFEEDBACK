@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>แบบประเมิน (Firebase)</title>
+  <title>แบบประเมินเจ้าหน้าที่หลังการขาย</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
 
@@ -119,8 +119,8 @@
       const submissionsRef = database.ref('submissions'); // สร้าง reference ไปยัง path 'submissions'
       submissionsRef.push(formDataToSubmit) // .push() จะสร้าง ID ใหม่ให้แต่ละรายการ
         .then(() => {
-          console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว!');
-          alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!');
+          console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว');
+          alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ');
           form.reset(); // ล้างข้อมูลในฟอร์ม
         })
         .catch(error => {
