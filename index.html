@@ -165,5 +165,38 @@
       <button type="submit">ส่งแบบประเมิน</button>
     </form>
   </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwfjbMt6mR9DZ4k46yotwN5j7_L06EuBD01T39fxhnvkZLjAh1GeU6-Qhgx6CC0YOY/exec"; // แทนที่ YOUR_SCRIPT_URL
+
+    document.getElementById("feedback-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const formData = {
+        project: document.getElementById("project").value,
+        houseNumber: document.getElementById("house-number").value,
+        serviceQuality: document.getElementById("service-quality").value,
+        communication: document.getElementById("communication").value,
+        repairQuality: document.getElementById("repair-quality").value,
+        comments: document.getElementById("comments").value
+      };
+
+      fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => {
+        alert("ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!");
+        document.getElementById("feedback-form").reset();
+      })
+      .catch(error => {
+        alert("เกิดข้อผิดพลาดในการส่งข้อมูล กรุณาลองใหม่อีกครั้ง");
+        console.error("Error!", error.message);
+      });
+    });
+  </script>
 </body>
 </html>
