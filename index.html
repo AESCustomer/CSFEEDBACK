@@ -86,6 +86,13 @@
       background-color: #333333;
     }
 
+    /* สไตล์เพิ่มเติมสำหรับปุ่มเมื่อถูก disable */
+    button:disabled {
+      background-color: #cccccc; /* สีพื้นหลังเมื่อปุ่มถูกปิดการใช้งาน */
+      color: #666666; /* สีตัวอักษรเมื่อปุ่มถูกปิดการใช้งาน */
+      cursor: not-allowed; /* เปลี่ยน cursor เพื่อบ่งบอกว่าคลิกไม่ได้ */
+    }
+
     @media (max-width: 600px) {
       body {
         padding: 10px;
@@ -168,9 +175,15 @@
   <script>
   const scriptURL = 'https://script.google.com/macros/s/AKfycbxhsi7D60JbXwor2_-_C0vsbyoKnYwKr42nCMIqSdtatS47fGr5Dg0KKDfE0CFt2E_M/exec'; // <-- ตรวจสอบให้แน่ใจว่า URL นี้ถูกต้อง
   const form = document.getElementById('feedback-form');
+  const submitButton = form.querySelector('button[type="submit"]'); // ดึงปุ่ม submit
+  const originalButtonText = submitButton.textContent; // เก็บข้อความเดิมของปุ่ม
 
   form.addEventListener('submit', e => {
     e.preventDefault(); // ป้องกันการ submit ฟอร์มแบบปกติ
+
+    // ปิดการใช้งานปุ่มและเปลี่ยนข้อความเพื่อแสดงสถานะกำลังโหลด
+    submitButton.disabled = true;
+    submitButton.textContent = 'กำลังส่งข้อมูล...';
 
     const formData = {
       project: document.getElementById('project').value,
@@ -179,7 +192,6 @@
       communication: document.getElementById('communication').value,
       repairQuality: document.getElementById('repair-quality').value,
       comments: document.getElementById('comments').value,
-      // Client-side timestamp (ถูกส่งไป แต่ Apps Script ปัจจุบันของคุณจะใช้ new Date() ของฝั่ง Server เอง)
       submissionTime: new Date().toISOString()
     };
 
@@ -191,39 +203,37 @@
       headers: {
         'Content-Type': 'application/json'
       }
-      // ไม่มี mode: 'no-cors' แล้ว เพื่อให้ Client อ่าน response จาก Server ได้
     })
     .then(response => {
-      if (response.ok) { // ตรวจสอบว่า HTTP status คือ 2xx (เช่น 200 OK)
-        return response.json(); // แปลง JSON response ที่ Apps Script ส่งกลับมา
+      if (response.ok) {
+        return response.json();
       } else {
-        // ถ้า Server ตอบกลับมาด้วย HTTP status ที่ไม่ปกติ (เช่น 4xx, 5xx)
         return response.text().then(text => {
-          // แสดงข้อความดิบจาก Server เพื่อช่วยในการดีบัก
           console.error('Server response (not ok):', text);
           throw new Error("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: " + response.status + ". " + (text || "ไม่มีข้อมูลเพิ่มเติม"));
         });
       }
     })
     .then(data => {
-      // data คือ object ที่ Apps Script ส่งกลับมา (เช่น { result: "success" })
-      if (data && data.result === "success") { // ตรวจสอบว่า data มีอยู่และมี property result เป็น "success"
+      if (data && data.result === "success") {
         console.log('Success (response from script):', data);
-        alert("ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!");
-        form.reset(); // ล้างข้อมูลในฟอร์ม
+        alert("ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ");
+        form.reset();
       } else {
-        // กรณีที่ Server ตอบกลับมา แต่โครงสร้างข้อมูลไม่ตรงตามที่คาดหวัง หรือ Server แจ้ง error ใน JSON เอง
         console.warn('Server reported success, but unexpected data structure or custom error:', data);
-        // แสดงข้อมูลที่ Server ส่งกลับมาทั้งหมดใน alert เพื่อให้ผู้ใช้หรือผู้พัฒนาเห็น
-        alert("ส่งแบบประเมินสำเร็จ แต่มีการตอบกลับที่ไม่คาดคิดจากเซิร์ฟเวอร์: " + JSON.stringify(data));
-        form.reset(); // ยังคงล้างฟอร์ม เพราะข้อมูลน่าจะถึง Server แล้ว
+        alert("เกิดข้อผิดพลาดในการส่งแบบประเมิน: " + JSON.stringify(data));
+        form.reset();
       }
     })
     .catch(error => {
-      // จัดการกับ error ที่เกิดขึ้นระหว่างการ fetch หรือการประมวลผล response
-      // เช่น ปัญหา network, DNS, หรือ error ที่ throw จาก .then() ด้านบน
       console.error('Error during fetch or processing response!', error.message);
       alert("เกิดข้อผิดพลาดในการส่งแบบประเมิน: " + error.message);
+    })
+    .finally(() => {
+      // เมื่อทุกอย่างเสร็จสิ้น (ไม่ว่าจะสำเร็จหรือ error)
+      // ให้เปิดใช้งานปุ่มและคืนข้อความเดิม
+      submitButton.disabled = false;
+      submitButton.textContent = originalButtonText;
     });
   });
   </script>
