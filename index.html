@@ -1,29 +1,18 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-   <meta charset="UTF-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My HTML Page</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      font-family: sans-serif;
-    }
-    img {
-      max-width: 100%;
-      height: auto;
-    }
-    .container {
-      max-width: 800px;
-      margin: auto;
-    }
-  <title>แบบประเมิน</title>
+  <title>แบบประเมินเจ้าหน้าที่บริการหลังการขาย</title>
 
   <!-- ฟอนต์จาก Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Montserrat', 'Noto Sans Thai', sans-serif;
       background-color: #f5f5f5;
@@ -43,21 +32,20 @@
     }
 
     .logo {
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
 
     .logo img {
       max-width: 250px;
       height: auto;
       display: block;
-      margin: 0 auto 10px;
+      margin: 0 auto;
     }
 
     h2 {
       font-size: 22px;
       font-weight: 600;
       margin-bottom: 30px;
-      letter-spacing: 1px;
     }
 
     label {
@@ -74,7 +62,6 @@
       padding: 14px;
       border-radius: 10px;
       border: 1px solid #ccc;
-      box-sizing: border-box;
       font-size: 18px;
       font-family: 'Noto Sans Thai', sans-serif;
     }
@@ -98,6 +85,16 @@
 
     button:hover {
       background-color: #333;
+    }
+
+    @media (max-width: 600px) {
+      .form-container {
+        padding: 25px 20px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
@@ -152,7 +149,6 @@
       <textarea id="comments" name="comments" rows="4"></textarea>
 
       <button type="submit">ส่งแบบประเมิน</button>
-      
     </form>
   </div>
 </body>
