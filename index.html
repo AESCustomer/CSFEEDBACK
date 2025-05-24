@@ -166,64 +166,72 @@
   </div>
 
   <script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbynZFUAYGg7Kch6eBc-xid4uoqmTSsLfe4rn5kMXxCoWyAUK_JIwTsVRO0tLuBfPNuQhA/exec'; // <-- ตรวจสอบให้แน่ใจว่า URL นี้ถูกต้อง
+  // ใช้ scriptURL เดิมที่คุณ Deploy ล่าสุด (ที่ผมทดสอบ OPTIONS ผ่าน)
+  // หรือถ้าคุณ Deploy Apps Script ใหม่ข้างบน ก็ใช้ URL จากการ Deploy ใหม่นั้น
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbw65zqeFQhSpyvt7fB0TNoA_PJZWWsktdY725fISksqwTRdT6toKd-RI0bZ3SlN1Zoo7Q/exec';
   const form = document.getElementById('feedback-form');
+  const submitButton = form.querySelector('button[type="submit"]');
+  const originalButtonText = submitButton.textContent;
 
   form.addEventListener('submit', e => {
-    e.preventDefault(); // ป้องกันการ submit ฟอร์มแบบปกติ
+    e.preventDefault();
 
-    const formData = {
-      project: document.getElementById('project').value,
-      houseNumber: document.getElementById('house-number').value,
-      serviceQuality: document.getElementById('service-quality').value,
-      communication: document.getElementById('communication').value,
-      repairQuality: document.getElementById('repair-quality').value,
-      comments: document.getElementById('comments').value,
-      // Client-side timestamp (ถูกส่งไป แต่ Apps Script ปัจจุบันของคุณจะใช้ new Date() ของฝั่ง Server เอง)
-      submissionTime: new Date().toISOString()
-    };
+    submitButton.disabled = true;
+    submitButton.textContent = 'กำลังส่งข้อมูล...';
 
-    console.log('ข้อมูลที่กำลังจะส่ง:', formData);
+    // สร้างข้อมูลแบบ Form Data
+    // Key names (project, houseNumber, etc.) MUST match e.parameter names in Apps Script
+    const params = new URLSearchParams();
+    params.append('project', document.getElementById('project').value);
+    params.append('houseNumber', document.getElementById('house-number').value);
+    params.append('serviceQuality', document.getElementById('service-quality').value);
+    params.append('communication', document.getElementById('communication').value);
+    params.append('repairQuality', document.getElementById('repair-quality').value);
+    params.append('comments', document.getElementById('comments').value);
+    params.append('submissionTime', new Date().toISOString()); // ส่งเวลาจาก Client ไปด้วย
+
+    console.log('ข้อมูลที่กำลังจะส่ง (URLSearchParams):', params.toString());
 
     fetch(scriptURL, {
       method: 'POST',
-      body: JSON.stringify(formData),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-      // ไม่มี mode: 'no-cors' แล้ว เพื่อให้ Client อ่าน response จาก Server ได้
+      // **ไม่ต้องตั้ง Content-Type header เอง** เบราว์เซอร์จะตั้งเป็น 'application/x-www-form-urlencoded'
+      // เมื่อ body เป็น URLSearchParams หรือ FormData
+      body: params // ส่ง URLSearchParams object
     })
     .then(response => {
-      if (response.ok) { // ตรวจสอบว่า HTTP status คือ 2xx (เช่น 200 OK)
-        return response.json(); // แปลง JSON response ที่ Apps Script ส่งกลับมา
-      } else {
-        // ถ้า Server ตอบกลับมาด้วย HTTP status ที่ไม่ปกติ (เช่น 4xx, 5xx)
-        return response.text().then(text => {
-          // แสดงข้อความดิบจาก Server เพื่อช่วยในการดีบัก
+      console.log("Raw response:", response);
+      if (!response.ok) {
+        // ถ้า Server ตอบกลับ error (เช่น 500 จาก Apps Script error)
+        return response.text().then(text => { // อ่านเป็น text ก่อน เพราะอาจจะไม่ใช่ JSON
           console.error('Server response (not ok):', text);
-          throw new Error("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: " + response.status + ". " + (text || "ไม่มีข้อมูลเพิ่มเติม"));
+          // พยายาม parse เป็น JSON ถ้า Apps Script ส่ง error JSON กลับมา
+          try {
+            const errData = JSON.parse(text);
+            throw new Error("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: " + response.status + ". " + (errData.message || text));
+          } catch (parseError) {
+            throw new Error("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: " + response.status + ". " + text);
+          }
         });
       }
+      return response.json(); // คาดหวัง JSON จาก Apps Script ({result: "success"})
     })
     .then(data => {
-      // data คือ object ที่ Apps Script ส่งกลับมา (เช่น { result: "success" })
-      if (data && data.result === "success") { // ตรวจสอบว่า data มีอยู่และมี property result เป็น "success"
-        console.log('Success (response from script):', data);
-        alert("ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!");
-        form.reset(); // ล้างข้อมูลในฟอร์ม
+      console.log('Success:', data);
+      if (data && data.result === "success") {
+        alert("ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ! (วิธี Form Data)");
+        form.reset();
       } else {
-        // กรณีที่ Server ตอบกลับมา แต่โครงสร้างข้อมูลไม่ตรงตามที่คาดหวัง หรือ Server แจ้ง error ใน JSON เอง
-        console.warn('Server reported success, but unexpected data structure or custom error:', data);
-        // แสดงข้อมูลที่ Server ส่งกลับมาทั้งหมดใน alert เพื่อให้ผู้ใช้หรือผู้พัฒนาเห็น
-        alert("ส่งแบบประเมินสำเร็จ แต่มีการตอบกลับที่ไม่คาดคิดจากเซิร์ฟเวอร์: " + JSON.stringify(data));
-        form.reset(); // ยังคงล้างฟอร์ม เพราะข้อมูลน่าจะถึง Server แล้ว
+        alert("ส่งแบบประเมินสำเร็จ แต่มีการตอบกลับที่ไม่คาดคิด: " + JSON.stringify(data));
+        form.reset();
       }
     })
     .catch(error => {
-      // จัดการกับ error ที่เกิดขึ้นระหว่างการ fetch หรือการประมวลผล response
-      // เช่น ปัญหา network, DNS, หรือ error ที่ throw จาก .then() ด้านบน
-      console.error('Error during fetch or processing response!', error.message);
+      console.error('Error:', error.message);
       alert("เกิดข้อผิดพลาดในการส่งแบบประเมิน: " + error.message);
+    })
+    .finally(() => {
+      submitButton.disabled = false;
+      submitButton.textContent = originalButtonText;
     });
   });
   </script>
