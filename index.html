@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>แบบประเมินเจ้าหน้าที่บริการหลังการขาย</title>
+  <title>แบบประเมินเจ้าหน้าที่</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
 
@@ -98,10 +98,10 @@
       submitButton.disabled = true;
       submitButton.textContent = 'กำลังส่งข้อมูล...';
 
-      // 3. รวบรวมข้อมูลจากฟอร์ม (ใช้ Key ภาษาไทยตามที่คุณต้องการ)
+      // 3. รวบรวมข้อมูลจากฟอร์ม (จัดลำดับ Key ตามที่คุณต้องการ)
       const formDataToSubmit = {
+        "บ้านเลขที่": document.getElementById('house-number').value, // <-- ย้ายมาเป็นอันดับแรก
         "โครงการ": document.getElementById('project').value,
-        "บ้านเลขที่": document.getElementById('house-number').value,
         "คุณภาพบริการ": document.getElementById('service-quality').value,
         "การสื่อสารชัดเจน": document.getElementById('communication').value,
         "คุณภาพการซ่อม": document.getElementById('repair-quality').value,
