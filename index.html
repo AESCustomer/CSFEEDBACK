@@ -99,14 +99,15 @@
       submitButton.textContent = 'กำลังส่งข้อมูล...';
 
       // 3. รวบรวมข้อมูลจากฟอร์ม
-      const formDataToSubmit = {
-        project: document.getElementById('project').value,
-        houseNumber: document.getElementById('house-number').value, // id คือ house-number
-        serviceQuality: document.getElementById('service-quality').value,
-        communication: document.getElementById('communication').value,
-        repairQuality: document.getElementById('repair-quality').value,
-        comments: document.getElementById('comments').value,
-        submissionTimestamp: new Date().toISOString(), // เวลาจาก Client
+     const formDataToSubmit = {
+  "โครงการ": document.getElementById('project').value, // ใช้ "" ครอบถ้ามีเว้นวรรคหรืออักขระพิเศษ
+  "บ้านเลขที่": document.getElementById('house-number').value,
+  "คุณภาพบริการ": document.getElementById('service-quality').value,
+  "การสื่อสารชัดเจน": document.getElementById('communication').value,
+  "คุณภาพการซ่อม": document.getElementById('repair-quality').value,
+  "ข้อเสนอแนะ": document.getElementById('comments').value,
+  "เวลาที่ส่งแบบประเมิน(ลูกบ้าน)": new Date().toISOString() // เปลี่ยนชื่อ Key ของ Timestamp ด้วยก็ได้ครับ
+}; // เวลาจาก Client
         // ถ้าต้องการเวลาจาก Server Firebase ให้เพิ่ม:
         // serverTimestamp: firebase.database.ServerValue.TIMESTAMP
       };
