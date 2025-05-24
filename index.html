@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>แบบประเมินเจ้าหน้าที่บริการหลังการขาย</title>
 
-  <!-- ฟอนต์จาก Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
@@ -167,42 +166,48 @@
   </div>
 
   <script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbxhsi7D60JbXwor2_-_C0vsbyoKnYwKr42nCMIqSdtatS47fGr5Dg0KKDfE0CFt2E_M/exec';
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbxhsi7D60JbXwor2_-_C0vsbyoKnYwKr42nCMIqSdtatS47fGr5Dg0KKDfE0CFt2E_M/exec'; // <-- ตรวจสอบให้แน่ใจว่า URL นี้ถูกต้อง
   const form = document.getElementById('feedback-form');
 
   form.addEventListener('submit', e => {
-    e.preventDefault();
+    e.preventDefault(); // ป้องกันการ submit ฟอร์มแบบปกติ
 
+    // ดึงค่าจาก ID ของ HTML element ให้ถูกต้อง
     const formData = {
-      project: document.getElementById('โครงการ').value,
-      houseNumber: document.getElementById('บ้านเลขที่').value,
-      serviceQuality: document.getElementById('คุณภาพการบริการ').value,
-      communication: document.getElementById('การสื่อสารชัดเจน').value,
-      repairQuality: document.getElementById('คุณภาพการซ่อม').value,
-      Time: document.getElementById('เวลาที่ส่ง').value,
-      comments: document.getElementById('ข้อเสนอแนะ').value
+      project: document.getElementById('project').value,
+      houseNumber: document.getElementById('house-number').value,
+      serviceQuality: document.getElementById('service-quality').value,
+      communication: document.getElementById('communication').value,
+      repairQuality: document.getElementById('repair-quality').value,
+      comments: document.getElementById('comments').value,
+      // เพิ่ม timestamp (เวลาที่ส่ง) โดยตรงถ้าคุณต้องการ
+      submissionTime: new Date().toISOString() // หรือตามรูปแบบที่ Apps Script ของคุณต้องการ
     };
+
+    // สำหรับการดีบัก (ตรวจสอบข้อผิดพลาด) คุณสามารถแสดงค่า formData ใน console ของเบราว์เซอร์ได้
+    console.log('ข้อมูลที่กำลังจะส่ง:', formData);
 
     fetch(scriptURL, {
       method: 'POST',
-      body: JSON.stringify(formData),
+      body: JSON.stringify(formData), // ตรวจสอบให้แน่ใจว่าข้อมูลถูกแปลงเป็น JSON string
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json' // Content type ที่ถูกต้องสำหรับ JSON
+      },
+      mode: 'no-cors' // มักจำเป็นเมื่อส่งข้อมูลไปยัง Google Apps Script จากเบราว์เซอร์โดยตรง หากไม่ได้จัดการ CORS ที่ฝั่งสคริปต์
     })
     .then(response => {
-      if (response.ok) {
-        alert("ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!");
-        form.reset();
-      } else {
-        alert("เกิดข้อผิดพลาดในการส่งแบบประเมิน");
-      }
+      // เมื่อใช้ mode: 'no-cors', object การตอบกลับ (response) อาจจะไม่โปร่งใส,
+      // ดังนั้นการตรวจสอบ response.ok อาจไม่ทำงานตามที่คาดไว้
+      // โดยทั่วไปจะถือว่าสำเร็จหากไม่เกิดข้อผิดพลาดเกี่ยวกับเครือข่าย
+      console.log('Success (no-cors):', response);
+      alert("ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!");
+      form.reset(); // ล้างข้อมูลในฟอร์ม
     })
     .catch(error => {
       console.error('Error!', error.message);
-      alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
+      alert("เกิดข้อผิดพลาดในการส่งแบบประเมิน: " + error.message);
     });
   });
-</script>
+  </script>
 </body>
 </html>
