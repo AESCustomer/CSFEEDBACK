@@ -174,12 +174,13 @@
     e.preventDefault();
 
     const formData = {
-      project: document.getElementById('project').value,
-      houseNumber: document.getElementById('house-number').value,
-      serviceQuality: document.getElementById('service-quality').value,
-      communication: document.getElementById('communication').value,
-      repairQuality: document.getElementById('repair-quality').value,
-      comments: document.getElementById('comments').value
+      project: document.getElementById('โครงการ').value,
+      houseNumber: document.getElementById('บ้านเลขที่').value,
+      serviceQuality: document.getElementById('คุณภาพการบริการ').value,
+      communication: document.getElementById('การสื่อสารชัดเจน').value,
+      repairQuality: document.getElementById('คุณภาพการซ่อม').value,
+      Time: document.getElementById('เวลาที่ส่ง').value,
+      comments: document.getElementById('ข้อเสนอแนะ').value
     };
 
     fetch(scriptURL, {
