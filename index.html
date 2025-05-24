@@ -172,7 +172,6 @@
   form.addEventListener('submit', e => {
     e.preventDefault(); // ป้องกันการ submit ฟอร์มแบบปกติ
 
-    // ดึงค่าจาก ID ของ HTML element ให้ถูกต้อง
     const formData = {
       project: document.getElementById('project').value,
       houseNumber: document.getElementById('house-number').value,
@@ -180,31 +179,50 @@
       communication: document.getElementById('communication').value,
       repairQuality: document.getElementById('repair-quality').value,
       comments: document.getElementById('comments').value,
-      // เพิ่ม timestamp (เวลาที่ส่ง) โดยตรงถ้าคุณต้องการ
-      submissionTime: new Date().toISOString() // หรือตามรูปแบบที่ Apps Script ของคุณต้องการ
+      // Client-side timestamp (ถูกส่งไป แต่ Apps Script ปัจจุบันของคุณจะใช้ new Date() ของฝั่ง Server เอง)
+      submissionTime: new Date().toISOString()
     };
 
-    // สำหรับการดีบัก (ตรวจสอบข้อผิดพลาด) คุณสามารถแสดงค่า formData ใน console ของเบราว์เซอร์ได้
     console.log('ข้อมูลที่กำลังจะส่ง:', formData);
 
     fetch(scriptURL, {
       method: 'POST',
-      body: JSON.stringify(formData), // ตรวจสอบให้แน่ใจว่าข้อมูลถูกแปลงเป็น JSON string
+      body: JSON.stringify(formData),
       headers: {
-        'Content-Type': 'application/json' // Content type ที่ถูกต้องสำหรับ JSON
-      },
-      mode: 'no-cors' // มักจำเป็นเมื่อส่งข้อมูลไปยัง Google Apps Script จากเบราว์เซอร์โดยตรง หากไม่ได้จัดการ CORS ที่ฝั่งสคริปต์
+        'Content-Type': 'application/json'
+      }
+      // ไม่มี mode: 'no-cors' แล้ว เพื่อให้ Client อ่าน response จาก Server ได้
     })
     .then(response => {
-      // เมื่อใช้ mode: 'no-cors', object การตอบกลับ (response) อาจจะไม่โปร่งใส,
-      // ดังนั้นการตรวจสอบ response.ok อาจไม่ทำงานตามที่คาดไว้
-      // โดยทั่วไปจะถือว่าสำเร็จหากไม่เกิดข้อผิดพลาดเกี่ยวกับเครือข่าย
-      console.log('Success (no-cors):', response);
-      alert("ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!");
-      form.reset(); // ล้างข้อมูลในฟอร์ม
+      if (response.ok) { // ตรวจสอบว่า HTTP status คือ 2xx (เช่น 200 OK)
+        return response.json(); // แปลง JSON response ที่ Apps Script ส่งกลับมา
+      } else {
+        // ถ้า Server ตอบกลับมาด้วย HTTP status ที่ไม่ปกติ (เช่น 4xx, 5xx)
+        return response.text().then(text => {
+          // แสดงข้อความดิบจาก Server เพื่อช่วยในการดีบัก
+          console.error('Server response (not ok):', text);
+          throw new Error("เกิดข้อผิดพลาดจากเซิร์ฟเวอร์: " + response.status + ". " + (text || "ไม่มีข้อมูลเพิ่มเติม"));
+        });
+      }
+    })
+    .then(data => {
+      // data คือ object ที่ Apps Script ส่งกลับมา (เช่น { result: "success" })
+      if (data && data.result === "success") { // ตรวจสอบว่า data มีอยู่และมี property result เป็น "success"
+        console.log('Success (response from script):', data);
+        alert("ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!");
+        form.reset(); // ล้างข้อมูลในฟอร์ม
+      } else {
+        // กรณีที่ Server ตอบกลับมา แต่โครงสร้างข้อมูลไม่ตรงตามที่คาดหวัง หรือ Server แจ้ง error ใน JSON เอง
+        console.warn('Server reported success, but unexpected data structure or custom error:', data);
+        // แสดงข้อมูลที่ Server ส่งกลับมาทั้งหมดใน alert เพื่อให้ผู้ใช้หรือผู้พัฒนาเห็น
+        alert("ส่งแบบประเมินสำเร็จ แต่มีการตอบกลับที่ไม่คาดคิดจากเซิร์ฟเวอร์: " + JSON.stringify(data));
+        form.reset(); // ยังคงล้างฟอร์ม เพราะข้อมูลน่าจะถึง Server แล้ว
+      }
     })
     .catch(error => {
-      console.error('Error!', error.message);
+      // จัดการกับ error ที่เกิดขึ้นระหว่างการ fetch หรือการประมวลผล response
+      // เช่น ปัญหา network, DNS, หรือ error ที่ throw จาก .then() ด้านบน
+      console.error('Error during fetch or processing response!', error.message);
       alert("เกิดข้อผิดพลาดในการส่งแบบประเมิน: " + error.message);
     });
   });
