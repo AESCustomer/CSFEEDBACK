@@ -21,24 +21,7 @@
     button[type="submit"]:hover { background-color: #333333; }
     button[type="submit"]:disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; }
 
-    /* Star Rating CSS */
-    .star-rating {
-      font-size: 2.2em; /* ขนาดดาว */
-      cursor: pointer;
-      display: block; 
-      text-align: center; /* จัดดาวให้อยู่กึ่งกลาง */
-      margin-bottom: 10px;
-    }
-    .star {
-      color: #ccc; /* สีดาวปกติ */
-      margin-left: 23px;  /* << ปรับเป็น 23px */
-      margin-right: 23px; /* << ปรับเป็น 23px */
-      transition: color 0.2s;
-    }
-    .star.selected,
-    .star-rating:hover .star.hover-effect {
-      color: #FFD700; /* สีดาวเมื่อถูกเลือก หรือ hover */
-    }
+    /* ลบ CSS ของ Star Rating ออก */
 
     @media (max-width: 600px) {
       body { padding: 10px; }
@@ -46,11 +29,6 @@
       h2 { font-size: 20px; }
       input[type="text"], select, textarea, button[type="submit"] { font-size: 16px; }
       .logo img { max-width: 180px; }
-      .star-rating { font-size: 1.8em; } 
-      .star { 
-        margin-left: 13px; /* ปรับระยะห่างดาวสำหรับมือถือ */
-        margin-right: 13px; 
-      }
     }
   </style>
 </head>
@@ -62,7 +40,8 @@
     <h2>แบบประเมินเจ้าหน้าที่บริการหลังการขาย</h2>
     <form id="feedback-form">
       <label for="project">โครงการ:</label>
-      <select id="project" name="project" required> <option value="">เลือกโครงการ</option>
+      <select id="project" name="project" required>
+        <option value="">เลือกโครงการ</option>
         <option value="ARKIN VIBHAVIDI 84">ARKIN VIBHAVIDI 84</option>
         <option value="ARKIN ONE DHUPATEME">ARKIN ONE DHUPATEME</option>
       </select>
@@ -70,29 +49,27 @@
       <label for="house-number">บ้านเลขที่:</label>
       <input type="text" id="house-number" name="houseNumber" required>
 
-      <label>1. ความรวดเร็วในการรับเรื่องแจ้งซ่อม:</label>
-      <div class="star-rating" id="rating-repair-speed">
-        <span class="star" data-value="1">☆</span><span class="star" data-value="2">☆</span><span class="star" data-value="3">☆</span><span class="star" data-value="4">☆</span><span class="star" data-value="5">☆</span>
-      </div>
-      <input type="hidden" name="repairSpeedScore" id="repairSpeedScore" value="0" required>
+      <label for="repair-speed-quality">1. ความรวดเร็วในการรับเรื่องแจ้งซ่อม:</label>
+      <select id="repair-speed-quality" name="repairSpeedQuality" required>
+        <option value="">เลือกคะแนน</option> <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+      </select>
 
-      <label>2. คุณภาพการบริการ:</label>
-      <div class="star-rating" id="rating-service-quality">
-        <span class="star" data-value="1">☆</span><span class="star" data-value="2">☆</span><span class="star" data-value="3">☆</span><span class="star" data-value="4">☆</span><span class="star" data-value="5">☆</span>
-      </div>
-      <input type="hidden" name="serviceQualityScore" id="serviceQualityScore" value="0" required>
+      <label for="service-quality">2. คุณภาพการบริการ:</label>
+      <select id="service-quality" name="serviceQuality" required>
+        <option value="">เลือกคะแนน</option>
+        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+      </select>
 
-      <label>3. คุณภาพการซ่อม:</label>
-      <div class="star-rating" id="rating-repair-quality">
-        <span class="star" data-value="1">☆</span><span class="star" data-value="2">☆</span><span class="star" data-value="3">☆</span><span class="star" data-value="4">☆</span><span class="star" data-value="5">☆</span>
-      </div>
-      <input type="hidden" name="repairQualityScore" id="repairQualityScore" value="0" required>
+      <label for="repair-quality">3. คุณภาพการซ่อม:</label>
+      <select id="repair-quality" name="repairQualityRating" required> <option value="">เลือกคะแนน</option>
+        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+      </select>
 
-      <label>4. การสื่อสารชัดเจน:</label>
-      <div class="star-rating" id="rating-communication">
-        <span class="star" data-value="1">☆</span><span class="star" data-value="2">☆</span><span class="star" data-value="3">☆</span><span class="star" data-value="4">☆</span><span class="star" data-value="5">☆</span>
-      </div>
-      <input type="hidden" name="communicationScore" id="communicationScore" value="0" required>
+      <label for="communication">4. การสื่อสารชัดเจน:</label>
+      <select id="communication" name="communicationRating" required> <option value="">เลือกคะแนน</option>
+        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+      </select>
+
 
       <label for="comments">ข้อเสนอแนะ:</label>
       <textarea id="comments" name="comments" rows="4"></textarea>
@@ -123,64 +100,10 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // Star Rating JavaScript
-    document.addEventListener('DOMContentLoaded', function() {
-      function setupStarRating(ratingContainerId, hiddenInputId) {
-        const ratingContainer = document.getElementById(ratingContainerId);
-        if (!ratingContainer) { console.error(`Element not found: ${ratingContainerId}`); return; }
-        const hiddenInput = document.getElementById(hiddenInputId);
-        if (!hiddenInput) { console.error(`Element not found: ${hiddenInputId}`); return; }
-        const stars = ratingContainer.querySelectorAll('.star');
-        let currentRating = parseInt(hiddenInput.value) || 0;
-
-        if (currentRating > 0) {
-            highlightStars(stars, currentRating, false);
-        }
-
-        stars.forEach(star => {
-          star.addEventListener('mouseover', function() {
-            const hoverValue = parseInt(this.dataset.value);
-            highlightStars(stars, hoverValue, true); 
-          });
-
-          star.addEventListener('mouseout', function() {
-            highlightStars(stars, currentRating, false); 
-          });
-
-          star.addEventListener('click', function() {
-            const clickedValue = parseInt(this.dataset.value);
-            if (currentRating === clickedValue) { 
-              currentRating = 0;
-            } else {
-              currentRating = clickedValue;
-            }
-            hiddenInput.value = currentRating;
-            highlightStars(stars, currentRating, false); 
-            console.log(`Rating for ${hiddenInputId}: ${currentRating}`);
-          });
-        });
-      }
-
-      function highlightStars(starsNodeList, value, isHovering) {
-        starsNodeList.forEach(s => {
-          const starValue = parseInt(s.dataset.value);
-          if (starValue <= value) {
-            s.classList.add(isHovering ? 'hover-effect' : 'selected');
-            s.classList.remove(isHovering ? 'selected' : 'hover-effect');
-            s.textContent = '★'; 
-          } else {
-            s.classList.remove('selected', 'hover-effect');
-            s.textContent = '☆'; 
-          }
-        });
-      }
-
-      // เรียกใช้สำหรับแต่ละกลุ่มดาวตาม ID ที่ถูกต้อง
-      setupStarRating('rating-repair-speed', 'repairSpeedScore');
-      setupStarRating('rating-service-quality', 'serviceQualityScore');
-      setupStarRating('rating-communication', 'communicationScore');
-      setupStarRating('rating-repair-quality', 'repairQualityScore');
-    });
+    // --- ลบ JavaScript ที่เกี่ยวกับ Star Rating ออก ---
+    // document.addEventListener('DOMContentLoaded', function() { ... });
+    // function setupStarRating(...) { ... }
+    // function highlightStars(...) { ... }
 
 
     // Form Submission JavaScript
@@ -194,20 +117,22 @@
       submitButton.textContent = 'กำลังส่งข้อมูล...';
 
       const projectValue = document.getElementById('project').value;
-      if (!projectValue) {
+      if (!projectValue) { // ตรวจสอบว่า projectValue ไม่ใช่ค่าว่าง
           alert("กรุณาเลือกโครงการ");
           submitButton.disabled = false;
           submitButton.textContent = originalButtonText;
           return; 
       }
 
-      const repairSpeedScore = document.getElementById('repairSpeedScore').value;
-      const serviceQualityScore = document.getElementById('serviceQualityScore').value;
-      const communicationScore = document.getElementById('communicationScore').value;
-      const repairQualityScore = document.getElementById('repairQualityScore').value;
+      // ดึงค่าจาก select elements
+      const repairSpeedValue = document.getElementById('repair-speed-quality').value;
+      const serviceQualityValue = document.getElementById('service-quality').value;
+      const communicationValue = document.getElementById('communication').value; // ใช้ id 'communication'
+      const repairQualityValue = document.getElementById('repair-quality').value;   // ใช้ id 'repair-quality'
 
-      if (repairSpeedScore === "0" || serviceQualityScore === "0" || communicationScore === "0" || repairQualityScore === "0") {
-          alert("กรุณาให้คะแนนดาวให้ครบทุกหัวข้อการประเมิน");
+      // ตรวจสอบว่ามีการเลือกคะแนนสำหรับทุกหัวข้อหรือไม่
+      if (!repairSpeedValue || !serviceQualityValue || !communicationValue || !repairQualityValue) {
+          alert("กรุณาเลือกคะแนนให้ครบทุกหัวข้อการประเมิน");
           submitButton.disabled = false;
           submitButton.textContent = originalButtonText;
           return;
@@ -216,10 +141,10 @@
       const formDataToSubmit = {
         "บ้านเลขที่": document.getElementById('house-number').value,
         "โครงการ": projectValue, 
-        "ความรวดเร็วในการรับเรื่องแจ้งซ่อม": repairSpeedScore,
-        "คุณภาพบริการ": serviceQualityScore,
-        "คุณภาพการซ่อม": repairQualityScore,
-        "การสื่อสารชัดเจน": communicationScore,
+        "ความรวดเร็วในการรับเรื่องแจ้งซ่อม": repairSpeedValue,
+        "คุณภาพบริการ": serviceQualityValue,
+        "การสื่อสารชัดเจน": communicationValue,
+        "คุณภาพการซ่อม": repairQualityValue,
         "ข้อเสนอแนะ": document.getElementById('comments').value,
         "เวลาที่ส่ง(Client)": new Date().toISOString()
       };
@@ -231,14 +156,7 @@
         .then(() => {
           console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว!');
           alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณครับ');
-          form.reset();
-          document.querySelectorAll('.star-rating').forEach(ratingContainer => {
-            const hiddenInputId = ratingContainer.id.replace('rating-', '') + 'Score';
-            const hiddenInput = document.getElementById(hiddenInputId);
-            if (hiddenInput) hiddenInput.value = "0";
-            const stars = ratingContainer.querySelectorAll('.star');
-            highlightStars(stars, 0, false); 
-          });
+          form.reset(); // form.reset() จะล้างค่า select และ input อื่นๆ กลับไปค่าเริ่มต้น
         })
         .catch(error => {
           console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูลไป Firebase:', error);
