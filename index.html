@@ -21,7 +21,7 @@
     button[type="submit"]:hover { background-color: #333333; }
     button[type="submit"]:disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; }
 
-    /* ลบ CSS ของ Star Rating ออก */
+    
 
     @media (max-width: 600px) {
       body { padding: 10px; }
@@ -82,9 +82,6 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <script>
-    // ====================================================================================
-    // 1. Firebase Configuration (ควรเป็นค่าของคุณ)
-    // ====================================================================================
     const firebaseConfig = {
       apiKey: "AIzaSyD9fCwQ8CiJ_sCP4oL0DpGGDs4A-wCLvc8",
       authDomain: "feed-e179b.firebaseapp.com",
@@ -96,17 +93,9 @@
       measurementId: "G-8QCJTFQGMQ"
     };
 
-    // 2. Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // --- ลบ JavaScript ที่เกี่ยวกับ Star Rating ออก ---
-    // document.addEventListener('DOMContentLoaded', function() { ... });
-    // function setupStarRating(...) { ... }
-    // function highlightStars(...) { ... }
-
-
-    // Form Submission JavaScript
     const form = document.getElementById('feedback-form');
     const submitButton = form.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.textContent;
@@ -124,13 +113,12 @@
           return; 
       }
 
-      // ดึงค่าจาก select elements
       const repairSpeedValue = document.getElementById('repair-speed-quality').value;
       const serviceQualityValue = document.getElementById('service-quality').value;
-      const communicationValue = document.getElementById('communication').value; // ใช้ id 'communication'
-      const repairQualityValue = document.getElementById('repair-quality').value;   // ใช้ id 'repair-quality'
+      const communicationValue = document.getElementById('communication').value;
+      const repairQualityValue = document.getElementById('repair-quality').value;
 
-      // ตรวจสอบว่ามีการเลือกคะแนนสำหรับทุกหัวข้อหรือไม่
+      
       if (!repairSpeedValue || !serviceQualityValue || !communicationValue || !repairQualityValue) {
           alert("กรุณาเลือกคะแนนให้ครบทุกหัวข้อการประเมิน");
           submitButton.disabled = false;
@@ -156,7 +144,7 @@
         .then(() => {
           console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว!');
           alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณครับ');
-          form.reset(); // form.reset() จะล้างค่า select และ input อื่นๆ กลับไปค่าเริ่มต้น
+          form.reset(); 
         })
         .catch(error => {
           console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูลไป Firebase:', error);
