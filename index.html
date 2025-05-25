@@ -40,19 +40,24 @@
       <label for="house-number">บ้านเลขที่:</label>
       <input type="text" id="house-number" name="houseNumber" required>
 
-      <label for="service-quality">1. คุณภาพการบริการ:</label>
+      <label for="repair-speed-quality">1. ความรวดเร็วในการรับเรื่องแจ้งซ่อม:</label> <select id="repair-speed-quality" name="repairSpeedQuality" required>
+    <option value="">เลือกคะแนน</option>
+    <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+</select>
+
+      <label for="service-quality">2. คุณภาพการบริการ:</label>
       <select id="service-quality" name="serviceQuality" required>
         <option value="">เลือกคะแนน</option>
         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
       </select>
 
-      <label for="communication">2. การสื่อสารชัดเจน:</label>
+      <label for="communication">3. การสื่อสารชัดเจน:</label>
       <select id="communication" name="communication" required>
         <option value="">เลือกคะแนน</option>
         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
       </select>
 
-      <label for="repair-quality">3. คุณภาพการซ่อม:</label>
+      <label for="repair-quality">4. คุณภาพการซ่อม:</label>
       <select id="repair-quality" name="repairQuality" required>
         <option value="">เลือกคะแนน</option>
         <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
@@ -69,15 +74,13 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <script>
-    // ====================================================================================
-    // 1. Firebase Configuration (อัปเดตด้วยข้อมูลของคุณ)
-    // ====================================================================================
+
     const firebaseConfig = {
       apiKey: "AIzaSyD9fCwQ8CiJ_sCP4oL0DpGGDs4A-wCLvc8",
       authDomain: "feed-e179b.firebaseapp.com",
       databaseURL: "https://feed-e179b-default-rtdb.asia-southeast1.firebasedatabase.app",
       projectId: "feed-e179b",
-      storageBucket: "feed-e179b.appspot.com", // แก้ไขตามปกติ: projectId + .appspot.com
+      storageBucket: "feed-e179b.appspot.com",
       messagingSenderId: "790012789407",
       appId: "1:790012789407:web:d48dc0a4e77edcf8a4d8aa",
       measurementId: "G-8QCJTFQGMQ"
@@ -85,23 +88,24 @@
 
     // 2. Initialize Firebase
     firebase.initializeApp(firebaseConfig);
-    const database = firebase.database(); // อ้างอิงไปยัง Realtime Database
+    const database = firebase.database(); 
 
-    // ส่วนที่เหลือคือ JavaScript สำหรับจัดการฟอร์ม
+    
     const form = document.getElementById('feedback-form');
     const submitButton = form.querySelector('button[type="submit"]');
     const originalButtonText = submitButton.textContent;
 
     form.addEventListener('submit', e => {
-      e.preventDefault(); // ป้องกันการ submit ฟอร์มแบบปกติของ HTML
+      e.preventDefault(); 
 
       submitButton.disabled = true;
       submitButton.textContent = 'กำลังส่งข้อมูล...';
 
-      // 3. รวบรวมข้อมูลจากฟอร์ม (จัดลำดับ Key ตามที่คุณต้องการ)
+      
       const formDataToSubmit = {
-        "บ้านเลขที่": document.getElementById('house-number').value, // <-- ย้ายมาเป็นอันดับแรก
+        "บ้านเลขที่": document.getElementById('house-number').value, 
         "โครงการ": document.getElementById('project').value,
+        "ความรวดเร็วในการรับเรื่องแจ้งซ่อม": document.getElementById('repair-speed-quality').value, 
         "คุณภาพบริการ": document.getElementById('service-quality').value,
         "การสื่อสารชัดเจน": document.getElementById('communication').value,
         "คุณภาพการซ่อม": document.getElementById('repair-quality').value,
@@ -111,7 +115,7 @@
 
       console.log('ข้อมูลที่จะส่งไป Firebase:', formDataToSubmit);
 
-      // 4. ส่งข้อมูลไปยัง Firebase Realtime Database
+      
       const submissionsRef = database.ref('submissions');
       submissionsRef.push(formDataToSubmit)
         .then(() => {
