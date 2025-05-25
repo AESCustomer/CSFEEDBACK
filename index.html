@@ -82,17 +82,17 @@
       </div>
       <input type="hidden" name="serviceQualityScore" id="serviceQualityScore" value="0" required>
 
-      <label>3. การสื่อสารชัดเจน:</label>
-      <div class="star-rating" id="rating-communication">
-        <span class="star" data-value="1">☆</span><span class="star" data-value="2">☆</span><span class="star" data-value="3">☆</span><span class="star" data-value="4">☆</span><span class="star" data-value="5">☆</span>
-      </div>
-      <input type="hidden" name="communicationScore" id="communicationScore" value="0" required>
-
-      <label>4. คุณภาพการซ่อม:</label>
+      <label>3. คุณภาพการซ่อม:</label>
       <div class="star-rating" id="rating-repair-quality">
         <span class="star" data-value="1">☆</span><span class="star" data-value="2">☆</span><span class="star" data-value="3">☆</span><span class="star" data-value="4">☆</span><span class="star" data-value="5">☆</span>
       </div>
       <input type="hidden" name="repairQualityScore" id="repairQualityScore" value="0" required>
+
+      <label>4. การสื่อสารชัดเจน:</label>
+      <div class="star-rating" id="rating-communication">
+        <span class="star" data-value="1">☆</span><span class="star" data-value="2">☆</span><span class="star" data-value="3">☆</span><span class="star" data-value="4">☆</span><span class="star" data-value="5">☆</span>
+      </div>
+      <input type="hidden" name="communicationScore" id="communicationScore" value="0" required>
 
       <label for="comments">ข้อเสนอแนะ:</label>
       <textarea id="comments" name="comments" rows="4"></textarea>
@@ -218,8 +218,8 @@
         "โครงการ": projectValue, 
         "ความรวดเร็วในการรับเรื่องแจ้งซ่อม": repairSpeedScore,
         "คุณภาพบริการ": serviceQualityScore,
-        "การสื่อสารชัดเจน": communicationScore,
         "คุณภาพการซ่อม": repairQualityScore,
+        "การสื่อสารชัดเจน": communicationScore,
         "ข้อเสนอแนะ": document.getElementById('comments').value,
         "เวลาที่ส่ง(Client)": new Date().toISOString()
       };
@@ -230,7 +230,7 @@
       submissionsRef.push(formDataToSubmit)
         .then(() => {
           console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว!');
-          alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!');
+          alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณครับ');
           form.reset();
           document.querySelectorAll('.star-rating').forEach(ratingContainer => {
             const hiddenInputId = ratingContainer.id.replace('rating-', '') + 'Score';
