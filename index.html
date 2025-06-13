@@ -1,160 +1,302 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>แบบประเมินเจ้าหน้าที่</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบประเมินเจ้าหน้าที่</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <style>
-    * { box-sizing: border-box; }
-    body { font-family: 'Montserrat', 'Noto Sans Thai', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; font-size: 18px; }
-    .form-container { max-width: 600px; margin: auto; background: #ffffff; padding: 35px 25px; border-radius: 20px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); }
-    .logo { text-align: center; margin-bottom: 25px; }
-    .logo img { max-width: 220px; height: auto; }
-    h2 { text-align: center; font-size: 22px; font-weight: 600; margin-bottom: 25px; }
-    label { display: block; margin-top: 20px; margin-bottom: 8px; font-weight: 600; }
-    input[type="text"], select, textarea { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #ccc; font-size: 17px; font-family: 'Noto Sans Thai', sans-serif; background-color: #fdfdfd; }
-    textarea { resize: vertical; min-height: 100px; }
-    button[type="submit"] { background-color: #000000; color: white; font-size: 18px; padding: 14px; border: none; border-radius: 12px; margin-top: 30px; width: 100%; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease; }
-    button[type="submit"]:hover { background-color: #333333; }
-    button[type="submit"]:disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; }
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    
+    <style>
+        /* Apply custom font to the entire page */
+        body {
+            font-family: 'Noto Sans Thai', sans-serif;
+        }
+        /* Custom styles for select dropdown arrow */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 1.2em;
+        }
+        /* Style for when the form is in a loading state */
+        .loading-state {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        /* Remove the default ring on the inner input when the parent has focus */
+        .group:focus-within input {
+           outline: none;
+           box-shadow: none;
+           border-color: transparent;
+        }
 
-    @media (max-width: 600px) {
-      body { padding: 10px; }
-      .form-container { padding: 25px 20px; }
-      h2 { font-size: 20px; }
-      input[type="text"], select, textarea, button[type="submit"] { font-size: 16px; }
-      .logo img { max-width: 180px; }
-    }
-  </style>
+    </style>
 </head>
-<body>
-  <div class="form-container">
-    <div class="logo">
-      <img src="434338186_293481903773810_7491720142568291549_n.jpg" alt="โลโก้">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6 sm:p-8 md:p-10">
+        <!-- Form Container -->
+        <div id="form-container">
+            <div class="text-center mb-8">
+                <!-- Logo: Replace with your actual logo URL or a placeholder -->
+                <img src="https://placehold.co/220x80/000000/FFFFFF?text=LOGO" alt="โลโก้" class="mx-auto h-16 w-auto">
+            </div>
+            <!-- UPDATED: Changed font-bold to font-semibold for a lighter heading -->
+            <h2 class="text-xl sm:text-2xl font-semibold text-center text-gray-800 mb-8">แบบประเมินเจ้าหน้าที่บริการหลังการขาย</h2>
+
+            <!-- Form element -->
+            <form id="feedback-form" class="space-y-6">
+                <!-- Project Selection -->
+                <div>
+                    <label for="project" class="block text-md font-semibold text-gray-700 mb-2">โครงการ</label>
+                    <select id="project" name="project" required class="block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <option value="">-- กรุณาเลือกโครงการ --</option>
+                        <option value="ARKIN VIBHAVIDI 84">ARKIN VIBHAVIDI 84</option>
+                        <option value="ARKIN ONE DHUPATEME">ARKIN ONE DHUPATEME</option>
+                    </select>
+                </div>
+
+                <!-- House Number Input (Split View) -->
+                <div>
+                    <label for="house-number-suffix" class="block text-md font-semibold text-gray-700 mb-2">บ้านเลขที่</label>
+                    <div class="group flex items-center border border-gray-300 rounded-xl focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500 transition-shadow duration-150">
+                        <span id="house-number-prefix" class="flex-shrink-0 px-4 py-3 bg-gray-100 text-gray-500 rounded-l-xl border-r border-gray-300">--/--</span>
+                        <input type="text" id="house-number-suffix" name="houseNumberSuffix" required placeholder="เลือกโครงการก่อน" class="flex-1 px-4 py-3 bg-white border-none rounded-r-xl focus:ring-0 min-w-0">
+                    </div>
+                </div>
+
+
+                <!-- Rating Section Title -->
+                <p class="text-lg font-semibold text-gray-800 pt-4 border-t border-gray-200">โปรดให้คะแนน (5 = ดีเยี่ยม, 1 = ต้องปรับปรุง)</p>
+
+                <!-- Dynamic rating creation -->
+                <div id="ratings-container" class="space-y-6"></div>
+
+                <!-- Comments/Suggestions -->
+                <div>
+                    <label for="comments" class="block text-md font-semibold text-gray-700 mb-2">ข้อเสนอแนะเพิ่มเติม</label>
+                    <textarea id="comments" name="comments" rows="4" placeholder="ความคิดเห็นของคุณมีความสำคัญต่อการพัฒนาของเรา" class="block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"></textarea>
+                </div>
+
+                <!-- Submission Button -->
+                <div class="pt-4">
+                    <button type="submit" id="submit-button" class="w-full bg-black text-white font-bold py-3 px-4 rounded-xl hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition duration-300 ease-in-out disabled:bg-gray-400">
+                        ส่งแบบประเมิน
+                    </button>
+                </div>
+            </form>
+             <!-- Message area for notifications -->
+            <div id="message-box" class="mt-6 text-center text-md font-medium hidden"></div>
+        </div>
+
+        <!-- Thank You Message Container (Initially Hidden) -->
+        <div id="thank-you-container" class="text-center hidden">
+             <svg class="mx-auto h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mt-4">ส่งข้อมูลสำเร็จ!</h2>
+            <p class="mt-2 text-gray-600">ขอบคุณสำหรับความคิดเห็นอันมีค่าของคุณ</p>
+            <button id="reset-form-button" class="mt-8 bg-blue-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300">
+                ส่งแบบประเมินอีกครั้ง
+            </button>
+        </div>
     </div>
-    <h2>แบบประเมินเจ้าหน้าที่บริการหลังการขาย</h2>
-    <form id="feedback-form">
-      <label for="project">โครงการ:</label>
-      <select id="project" name="project" required>
-        <option value="">เลือกโครงการ</option>
-        <option value="ARKIN VIBHAVIDI 84">ARKIN VIBHAVIDI 84</option>
-        <option value="ARKIN ONE DHUPATEME">ARKIN ONE DHUPATEME</option>
-      </select>
 
-      <label for="house-number">บ้านเลขที่:</label>
-      <input type="text" id="house-number" name="houseNumber" required>
+    <!-- Firebase SDK - Using modern modular version -->
+    <script type="module">
+        // Import necessary functions from the Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-      <label for="repair-speed-quality">1. ความรวดเร็วในการรับเรื่องแจ้งซ่อม:</label>
-      <select id="repair-speed-quality" name="repairSpeedQuality" required>
-        <option value="">เลือกคะแนน</option> <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
-      </select>
+        // IMPORTANT: These variables are provided by the environment. Do not change them.
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-      <label for="service-quality">2. คุณภาพการบริการ:</label>
-      <select id="service-quality" name="serviceQuality" required>
-        <option value="">เลือกคะแนน</option>
-        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
-      </select>
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
 
-      <label for="repair-quality">3. คุณภาพการซ่อม:</label>
-      <select id="repair-quality" name="repairQualityRating" required> <option value="">เลือกคะแนน</option>
-        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
-      </select>
+        // Authenticate the user
+        async function authenticateUser() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Authentication failed:", error);
+            }
+        }
 
-      <label for="communication">4. การสื่อสารชัดเจน:</label>
-      <select id="communication" name="communicationRating" required> <option value="">เลือกคะแนน</option>
-        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
-      </select>
+        // --- Form elements ---
+        const form = document.getElementById('feedback-form');
+        const submitButton = document.getElementById('submit-button');
+        const messageBox = document.getElementById('message-box');
+        const formContainer = document.getElementById('form-container');
+        const thankYouContainer = document.getElementById('thank-you-container');
+        const resetFormButton = document.getElementById('reset-form-button');
+        const projectSelect = document.getElementById('project');
+        // New elements for the split house number input
+        const houseNumberPrefix = document.getElementById('house-number-prefix');
+        const houseNumberSuffix = document.getElementById('house-number-suffix');
 
+        // --- Rating questions ---
+        const ratingQuestions = [
+            { id: 'repair-speed-quality', label: '1. ความรวดเร็วในการรับเรื่องแจ้งซ่อม' },
+            { id: 'service-quality', label: '2. คุณภาพการบริการของเจ้าหน้าที่' },
+            { id: 'repair-quality', label: '3. คุณภาพงานซ่อมและความเรียบร้อย' },
+            { id: 'communication', label: '4. การสื่อสารและให้ข้อมูลที่ชัดเจน' }
+        ];
 
-      <label for="comments">ข้อเสนอแนะ:</label>
-      <textarea id="comments" name="comments" rows="4"></textarea>
+        // --- Dynamically create rating inputs ---
+        const ratingsContainer = document.getElementById('ratings-container');
+        ratingQuestions.forEach(q => {
+            const div = document.createElement('div');
+            const label = document.createElement('label');
+            label.htmlFor = q.id;
+            label.className = 'block text-md font-semibold text-gray-700 mb-2';
+            label.textContent = q.label;
 
-      <button type="submit">ส่งแบบประเมิน</button>
-    </form>
-  </div>
+            const select = document.createElement('select');
+            select.id = q.id;
+            select.name = q.id;
+            select.required = true;
+            select.className = 'block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out';
+            
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = '-- เลือกคะแนน --';
+            select.appendChild(defaultOption);
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyD9fCwQ8CiJ_sCP4oL0DpGGDs4A-wCLvc8",
-      authDomain: "feed-e179b.firebaseapp.com",
-      databaseURL: "https://feed-e179b-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "feed-e179b",
-      storageBucket: "feed-e179b.appspot.com",
-      messagingSenderId: "790012789407",
-      appId: "1:790012789407:web:d48dc0a4e77edcf8a4d8aa",
-      measurementId: "G-8QCJTFQGMQ"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-
-    const form = document.getElementById('feedback-form');
-    const submitButton = form.querySelector('button[type="submit"]');
-    const originalButtonText = submitButton.textContent;
-
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      submitButton.disabled = true;
-      submitButton.textContent = 'กำลังส่งข้อมูล...';
-
-      const projectValue = document.getElementById('project').value;
-      if (!projectValue) { // ตรวจสอบว่า projectValue ไม่ใช่ค่าว่าง
-          alert("กรุณาเลือกโครงการ");
-          submitButton.disabled = false;
-          submitButton.textContent = originalButtonText;
-          return; 
-      }
-
-      const repairSpeedValue = document.getElementById('repair-speed-quality').value;
-      const serviceQualityValue = document.getElementById('service-quality').value;
-      const communicationValue = document.getElementById('communication').value;
-      const repairQualityValue = document.getElementById('repair-quality').value;
-
-      
-      if (!repairSpeedValue || !serviceQualityValue || !communicationValue || !repairQualityValue) {
-          alert("กรุณาเลือกคะแนนให้ครบทุกหัวข้อการประเมิน");
-          submitButton.disabled = false;
-          submitButton.textContent = originalButtonText;
-          return;
-      }
-
-      const formDataToSubmit = {
-        "บ้านเลขที่": document.getElementById('house-number').value,
-        "โครงการ": projectValue, 
-        "ความรวดเร็วในการรับเรื่องแจ้งซ่อม": repairSpeedValue,
-        "คุณภาพบริการ": serviceQualityValue,
-        "การสื่อสารชัดเจน": communicationValue,
-        "คุณภาพการซ่อม": repairQualityValue,
-        "ข้อเสนอแนะ": document.getElementById('comments').value,
-        "เวลาที่ส่ง(Client)": new Date().toISOString()
-      };
-
-      console.log('ข้อมูลที่จะส่งไป Firebase:', formDataToSubmit);
-
-      const submissionsRef = database.ref('submissions');
-      submissionsRef.push(formDataToSubmit)
-        .then(() => {
-          console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว!');
-          alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณครับ');
-          form.reset(); 
-        })
-        .catch(error => {
-          console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูลไป Firebase:', error);
-          alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + error.message);
-        })
-        .finally(() => {
-          submitButton.disabled = false;
-          submitButton.textContent = originalButtonText;
+            for (let i = 5; i >= 1; i--) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                select.appendChild(option);
+            }
+            div.appendChild(label);
+            div.appendChild(select);
+            ratingsContainer.appendChild(div);
         });
-    });
-  </script>
+
+        // --- Automatically set house number prefix based on project selection ---
+        projectSelect.addEventListener('change', (e) => {
+            const selectedProject = e.target.value;
+            let prefix = '--/--';
+            let placeholder = 'กรุณาเลือกโครงการก่อน';
+
+            if (selectedProject === 'ARKIN VIBHAVIDI 84') {
+                prefix = '35/';
+                placeholder = 'กรอกเลขที่บ้าน';
+            } else if (selectedProject === 'ARKIN ONE DHUPATEME') {
+                prefix = '1/';
+                placeholder = 'กรอกเลขที่บ้าน';
+            }
+            
+            houseNumberPrefix.textContent = prefix;
+            houseNumberSuffix.value = ''; // Clear previous suffix
+            houseNumberSuffix.placeholder = placeholder;
+            
+            if (selectedProject) {
+                houseNumberSuffix.focus();
+            }
+        });
+
+        // --- Helper function to show messages ---
+        function showMessage(message, isError = false) {
+            messageBox.textContent = message;
+            messageBox.className = `mt-6 text-center text-md font-medium ${isError ? 'text-red-600' : 'text-green-600'}`;
+            messageBox.classList.remove('hidden');
+        }
+
+        // --- Form submission logic ---
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            submitButton.disabled = true;
+            submitButton.textContent = 'กำลังส่งข้อมูล...';
+            form.classList.add('loading-state');
+            messageBox.classList.add('hidden');
+
+            try {
+                if (!auth.currentUser) {
+                    await authenticateUser();
+                    if (!auth.currentUser) {
+                        throw new Error("ไม่สามารถยืนยันตัวตนได้ กรุณาลองใหม่อีกครั้ง");
+                    }
+                }
+
+                // Combine prefix and suffix to get the full house number
+                const prefix = houseNumberPrefix.textContent;
+                const suffix = houseNumberSuffix.value;
+                // Make sure we don't submit the default "--/--" prefix
+                const fullHouseNumber = prefix.includes('--/--') ? suffix : prefix + suffix;
+                
+                // Check if house number is entered
+                if (!fullHouseNumber || !suffix) {
+                    throw new Error("กรุณากรอกบ้านเลขที่");
+                }
+
+                const formData = new FormData(form);
+                const submissionData = {
+                    project: formData.get('project'),
+                    houseNumber: fullHouseNumber,
+                    ratings: {},
+                    comments: formData.get('comments'),
+                    submittedAt: serverTimestamp(),
+                    clientTime: new Date().toISOString(),
+                    userId: auth.currentUser.uid
+                };
+                
+                ratingQuestions.forEach(q => {
+                    submissionData.ratings[q.id] = parseInt(formData.get(q.id), 10);
+                });
+
+                const collectionPath = `artifacts/${appId}/public/data/submissions`;
+                await addDoc(collection(db, collectionPath), submissionData);
+                
+                formContainer.classList.add('hidden');
+                thankYouContainer.classList.remove('hidden');
+
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+                showMessage(error.message, true); // Use error.message for more specific feedback
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'ส่งแบบประเมิน';
+                form.classList.remove('loading-state');
+            }
+        });
+        
+        // --- Reset form to allow another submission ---
+        resetFormButton.addEventListener('click', () => {
+            form.reset();
+            // Also reset the house number fields
+            houseNumberPrefix.textContent = '--/--';
+            houseNumberSuffix.value = '';
+            houseNumberSuffix.placeholder = 'เลือกโครงการก่อน';
+
+            messageBox.classList.add('hidden');
+            thankYouContainer.classList.add('hidden');
+            formContainer.classList.remove('hidden');
+        });
+
+        // --- Initial authentication on page load ---
+        authenticateUser();
+
+    </script>
 </body>
 </html>
