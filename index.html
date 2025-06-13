@@ -14,32 +14,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Apply custom font to the entire page */
-        body {
-            font-family: 'Noto Sans Thai', sans-serif;
-        }
-        /* Custom styles for select dropdown arrow */
+        body { font-family: 'Noto Sans Thai', sans-serif; }
         select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
+            -webkit-appearance: none; -moz-appearance: none; appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 1.2em;
+            background-repeat: no-repeat; background-position: right 0.75rem center; background-size: 1.2em;
         }
-        /* Style for when the form is in a loading state */
-        .loading-state {
-            opacity: 0.7;
-            pointer-events: none;
-        }
-        /* Remove the default ring on the inner input when the parent has focus */
-        .group:focus-within input {
-           outline: none;
-           box-shadow: none;
-           border-color: transparent;
-        }
-
+        .loading-state { opacity: 0.7; pointer-events: none; }
+        .group:focus-within input { outline: none; box-shadow: none; border-color: transparent; }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
@@ -48,10 +30,8 @@
         <!-- Form Container -->
         <div id="form-container">
             <div class="text-center mb-8">
-                <!-- Logo: Replace with your actual logo URL or a placeholder -->
-                <img src="https://placehold.co/220x80/000000/FFFFFF?text=LOGO" alt="โลโก้" class="mx-auto h-16 w-auto">
+                 <img src="434338186_293481903773810_7491720142568291549_n.jpg" alt="โลโก้"> class="mx-auto h-16 w-auto">
             </div>
-            <!-- UPDATED: Changed font-bold to font-semibold for a lighter heading -->
             <h2 class="text-xl sm:text-2xl font-semibold text-center text-gray-800 mb-8">แบบประเมินเจ้าหน้าที่บริการหลังการขาย</h2>
 
             <!-- Form element -->
@@ -75,10 +55,8 @@
                     </div>
                 </div>
 
-
-                <!-- Rating Section Title -->
                 <p class="text-lg font-semibold text-gray-800 pt-4 border-t border-gray-200">โปรดให้คะแนน (5 = ดีเยี่ยม, 1 = ต้องปรับปรุง)</p>
-
+                
                 <!-- Dynamic rating creation -->
                 <div id="ratings-container" class="space-y-6"></div>
 
@@ -117,31 +95,9 @@
         // Import necessary functions from the Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-        // IMPORTANT: These variables are provided by the environment. Do not change them.
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-
-        // Authenticate the user
-        async function authenticateUser() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            } catch (error) {
-                console.error("Authentication failed:", error);
-            }
-        }
-
-        // --- Form elements ---
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        
+        // --- UI Element Definitions ---
         const form = document.getElementById('feedback-form');
         const submitButton = document.getElementById('submit-button');
         const messageBox = document.getElementById('message-box');
@@ -149,11 +105,11 @@
         const thankYouContainer = document.getElementById('thank-you-container');
         const resetFormButton = document.getElementById('reset-form-button');
         const projectSelect = document.getElementById('project');
-        // New elements for the split house number input
         const houseNumberPrefix = document.getElementById('house-number-prefix');
         const houseNumberSuffix = document.getElementById('house-number-suffix');
-
-        // --- Rating questions ---
+        const ratingsContainer = document.getElementById('ratings-container');
+        
+        // --- Rating Questions ---
         const ratingQuestions = [
             { id: 'repair-speed-quality', label: '1. ความรวดเร็วในการรับเรื่องแจ้งซ่อม' },
             { id: 'service-quality', label: '2. คุณภาพการบริการของเจ้าหน้าที่' },
@@ -161,26 +117,22 @@
             { id: 'communication', label: '4. การสื่อสารและให้ข้อมูลที่ชัดเจน' }
         ];
 
-        // --- Dynamically create rating inputs ---
-        const ratingsContainer = document.getElementById('ratings-container');
+        // --- Dynamically Create UI (This will now run every time) ---
         ratingQuestions.forEach(q => {
             const div = document.createElement('div');
             const label = document.createElement('label');
             label.htmlFor = q.id;
             label.className = 'block text-md font-semibold text-gray-700 mb-2';
             label.textContent = q.label;
-
             const select = document.createElement('select');
             select.id = q.id;
             select.name = q.id;
             select.required = true;
             select.className = 'block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out';
-            
             const defaultOption = document.createElement('option');
             defaultOption.value = '';
             defaultOption.textContent = '-- เลือกคะแนน --';
             select.appendChild(defaultOption);
-
             for (let i = 5; i >= 1; i--) {
                 const option = document.createElement('option');
                 option.value = i;
@@ -191,112 +143,104 @@
             div.appendChild(select);
             ratingsContainer.appendChild(div);
         });
-
-        // --- Automatically set house number prefix based on project selection ---
+        
+        // --- UI Interaction Logic ---
         projectSelect.addEventListener('change', (e) => {
             const selectedProject = e.target.value;
             let prefix = '--/--';
-            let placeholder = 'กรุณาเลือกโครงการก่อน';
-
-            if (selectedProject === 'ARKIN VIBHAVIDI 84') {
-                prefix = '35/';
-                placeholder = 'กรอกเลขที่บ้าน';
-            } else if (selectedProject === 'ARKIN ONE DHUPATEME') {
-                prefix = '1/';
-                placeholder = 'กรอกเลขที่บ้าน';
-            }
-            
+            let placeholder = 'เลือกโครงการก่อน';
+            if (selectedProject === 'ARKIN VIBHAVIDI 84') { prefix = '35/'; placeholder = 'กรอกเลขที่บ้าน'; } 
+            else if (selectedProject === 'ARKIN ONE DHUPATEME') { prefix = '1/'; placeholder = 'กรอกเลขที่บ้าน'; }
             houseNumberPrefix.textContent = prefix;
-            houseNumberSuffix.value = ''; // Clear previous suffix
+            houseNumberSuffix.value = '';
             houseNumberSuffix.placeholder = placeholder;
-            
-            if (selectedProject) {
-                houseNumberSuffix.focus();
-            }
+            if (selectedProject) { houseNumberSuffix.focus(); }
         });
 
-        // --- Helper function to show messages ---
+        resetFormButton.addEventListener('click', () => {
+            form.reset();
+            houseNumberPrefix.textContent = '--/--';
+            houseNumberSuffix.placeholder = 'เลือกโครงการก่อน';
+            messageBox.classList.add('hidden');
+            thankYouContainer.classList.add('hidden');
+            formContainer.classList.remove('hidden');
+        });
+
         function showMessage(message, isError = false) {
             messageBox.textContent = message;
             messageBox.className = `mt-6 text-center text-md font-medium ${isError ? 'text-red-600' : 'text-green-600'}`;
             messageBox.classList.remove('hidden');
         }
 
-        // --- Form submission logic ---
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
+        // --- Firebase Configuration & Logic ---
+        //  [IMPORTANT] PASTE YOUR FIREBASE CONFIG OBJECT HERE
+        const firebaseConfig = {
+            // apiKey: "AIza....",
+            // authDomain: "your-project.firebaseapp.com",
+            // projectId: "your-project",
+            // storageBucket: "your-project.appspot.com",
+            // messagingSenderId: "...",
+            // appId: "1:...",
+            // databaseURL: "https://your-project.firebaseio.com" // If you use Realtime Database
+        };
+
+        // Only run Firebase logic if config is provided
+        if (firebaseConfig && firebaseConfig.apiKey) {
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            const auth = getAuth(app);
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                submitButton.disabled = true;
+                submitButton.textContent = 'กำลังส่งข้อมูล...';
+                form.classList.add('loading-state');
+                messageBox.classList.add('hidden');
+
+                try {
+                    await signInAnonymously(auth);
+                    const prefix = houseNumberPrefix.textContent;
+                    const suffix = houseNumberSuffix.value;
+                    const fullHouseNumber = prefix.includes('--/--') ? suffix : prefix + suffix;
+                    if (!fullHouseNumber || !suffix) { throw new Error("กรุณากรอกบ้านเลขที่"); }
+
+                    const formData = new FormData(form);
+                    const submissionData = {
+                        project: formData.get('project'),
+                        houseNumber: fullHouseNumber,
+                        ratings: {},
+                        comments: formData.get('comments'),
+                        submittedAt: serverTimestamp(),
+                        clientTime: new Date().toISOString(),
+                        userId: auth.currentUser.uid
+                    };
+                    ratingQuestions.forEach(q => { submissionData.ratings[q.id] = parseInt(formData.get(q.id), 10); });
+
+                    const collectionPath = `submissions`; // Store in a top-level collection
+                    await addDoc(collection(db, collectionPath), submissionData);
+                    
+                    formContainer.classList.add('hidden');
+                    thankYouContainer.classList.remove('hidden');
+
+                } catch (error) {
+                    console.error('Error submitting feedback:', error);
+                    showMessage(error.message, true);
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'ส่งแบบประเมิน';
+                    form.classList.remove('loading-state');
+                }
+            });
+        } else {
+            // If config is missing, disable the form submission
+            console.warn("Firebase config is missing. Form submission is disabled.");
             submitButton.disabled = true;
-            submitButton.textContent = 'กำลังส่งข้อมูล...';
-            form.classList.add('loading-state');
-            messageBox.classList.add('hidden');
-
-            try {
-                if (!auth.currentUser) {
-                    await authenticateUser();
-                    if (!auth.currentUser) {
-                        throw new Error("ไม่สามารถยืนยันตัวตนได้ กรุณาลองใหม่อีกครั้ง");
-                    }
-                }
-
-                // Combine prefix and suffix to get the full house number
-                const prefix = houseNumberPrefix.textContent;
-                const suffix = houseNumberSuffix.value;
-                // Make sure we don't submit the default "--/--" prefix
-                const fullHouseNumber = prefix.includes('--/--') ? suffix : prefix + suffix;
-                
-                // Check if house number is entered
-                if (!fullHouseNumber || !suffix) {
-                    throw new Error("กรุณากรอกบ้านเลขที่");
-                }
-
-                const formData = new FormData(form);
-                const submissionData = {
-                    project: formData.get('project'),
-                    houseNumber: fullHouseNumber,
-                    ratings: {},
-                    comments: formData.get('comments'),
-                    submittedAt: serverTimestamp(),
-                    clientTime: new Date().toISOString(),
-                    userId: auth.currentUser.uid
-                };
-                
-                ratingQuestions.forEach(q => {
-                    submissionData.ratings[q.id] = parseInt(formData.get(q.id), 10);
-                });
-
-                const collectionPath = `artifacts/${appId}/public/data/submissions`;
-                await addDoc(collection(db, collectionPath), submissionData);
-                
-                formContainer.classList.add('hidden');
-                thankYouContainer.classList.remove('hidden');
-
-            } catch (error) {
-                console.error('Error submitting feedback:', error);
-                showMessage(error.message, true); // Use error.message for more specific feedback
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = 'ส่งแบบประเมิน';
-                form.classList.remove('loading-state');
-            }
-        });
-        
-        // --- Reset form to allow another submission ---
-        resetFormButton.addEventListener('click', () => {
-            form.reset();
-            // Also reset the house number fields
-            houseNumberPrefix.textContent = '--/--';
-            houseNumberSuffix.value = '';
-            houseNumberSuffix.placeholder = 'เลือกโครงการก่อน';
-
-            messageBox.classList.add('hidden');
-            thankYouContainer.classList.add('hidden');
-            formContainer.classList.remove('hidden');
-        });
-
-        // --- Initial authentication on page load ---
-        authenticateUser();
-
+            submitButton.textContent = 'การตั้งค่าไม่สมบูรณ์';
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                showMessage('ไม่สามารถส่งข้อมูลได้เนื่องจากการตั้งค่า Firebase ไม่สมบูรณ์', true);
+            });
+        }
     </script>
 </body>
 </html>
