@@ -15,8 +15,13 @@
             margin: 0;
             padding: 20px;
             font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
         .form-container {
+            width: 100%;
             max-width: 600px;
             margin: auto;
             background: #ffffff;
@@ -55,6 +60,50 @@
             font-family: 'Noto Sans Thai', sans-serif;
             background-color: #fdfdfd;
         }
+        .house-number-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fdfdfd;
+            overflow: hidden;
+        }
+        .house-number-prefix {
+            font-weight: 600;
+            color: #333;
+            font-size: 17px;
+            background-color: #f5f5f5;
+            padding: 14px;
+            border-right: 1px solid #ccc;
+            white-space: nowrap;
+        }
+        .house-number-suffix-input {
+            flex-grow: 1;
+            border: none;
+            background-color: transparent;
+            outline: none;
+            padding: 14px;
+        }
+        .house-number-suffix-input:disabled {
+            background-color: transparent;
+            cursor: not-allowed;
+            color: #666;
+        }
+        
+        .rating-guide {
+            font-size: 16px;
+            color: #555;
+            margin-top: 0;
+            margin-bottom: 0;
+            font-weight: 600;
+        }
+
+        .form-divider {
+            border: none;
+            border-top: 1px solid #e0e0e0;
+            margin: 30px 0 20px 0;
+        }
+
         textarea {
             resize: vertical;
             min-height: 100px;
@@ -80,25 +129,44 @@
             color: #666666;
             cursor: not-allowed;
         }
+        .custom-alert-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        .custom-alert-box {
+            background: white; padding: 25px; border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-align: center; max-width: 90%; width: 400px;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        .custom-alert-overlay.visible {
+            opacity: 1; visibility: visible;
+        }
+        .custom-alert-overlay.visible .custom-alert-box {
+            transform: scale(1);
+        }
+        .custom-alert-box p {
+            margin: 0 0 20px; font-size: 18px;
+        }
+        .custom-alert-box button {
+            background-color: #000; color: white; border: none;
+            padding: 10px 25px; border-radius: 8px;
+            cursor: pointer; font-size: 16px;
+        }
         @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            .form-container {
-                padding: 25px 20px;
-            }
-            h2 {
-                font-size: 20px;
-            }
-            input[type="text"],
-            select,
-            textarea,
-            button[type="submit"] {
-                font-size: 16px;
-            }
-            .logo img {
-                max-width: 180px;
-            }
+            body { padding: 10px; }
+            .form-container { padding: 25px 20px; }
+            h2 { font-size: 20px; }
+            input[type="text"], select, textarea, button[type="submit"] { font-size: 16px; }
+            .house-number-prefix { font-size: 16px; }
+            .rating-guide { font-size: 15px; }
+            .logo img { max-width: 180px; }
         }
     </style>
 </head>
@@ -116,47 +184,34 @@
                 <option value="ARKIN ONE DHUPATEME">ARKIN ONE DHUPATEME</option>
             </select>
 
-            <label for="house-number">บ้านเลขที่:</label>
-            <input type="text" id="house-number" name="houseNumber" required>
+            <label for="house-number-suffix">บ้านเลขที่:</label>
+            <div class="house-number-group">
+                <span id="house-number-prefix" class="house-number-prefix">--/--</span>
+                <input type="text" id="house-number-suffix" name="houseNumberSuffix" required class="house-number-suffix-input" placeholder="เลือกโครงการก่อน" disabled>
+            </div>
 
-            <label for="repair-speed-quality">1. ความรวดเร็วในการรับเรื่องแจ้งซ่อม:</label>
+            <hr class="form-divider">
+
+            <p class="rating-guide">โปรดให้คะแนน (5 = ดีเยี่ยม, 1 = ต้องปรับปรุง)</p>
+            
+            <label for="repair-speed-quality">ความรวดเร็วในการตอบรับและประสานงาน:</label>
             <select id="repair-speed-quality" name="repairSpeedQuality" required>
-                <option value="">เลือกคะแนน</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option value="">เลือกคะแนน</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
             </select>
 
-            <label for="service-quality">2. คุณภาพการบริการ:</label>
+            <label for="service-quality">ความเป็นมืออาชีพและอัธยาศัยในการให้บริการ:</label>
             <select id="service-quality" name="serviceQuality" required>
-                <option value="">เลือกคะแนน</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option value="">เลือกคะแนน</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
             </select>
 
-            <label for="repair-quality">3. คุณภาพการซ่อม:</label>
+            <label for="repair-quality">คุณภาพและความเรียบร้อยของงานซ่อม:</label>
             <select id="repair-quality" name="repairQualityRating" required>
-                <option value="">เลือกคะแนน</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option value="">เลือกคะแนน</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
             </select>
 
-            <label for="communication">4. การสื่อสารชัดเจน:</label>
+            <label for="communication">การสื่อสารและให้ข้อมูลที่ชัดเจน:</label>
             <select id="communication" name="communicationRating" required>
-                <option value="">เลือกคะแนน</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option value="">เลือกคะแนน</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
             </select>
 
             <label for="comments">ข้อเสนอแนะ:</label>
@@ -166,10 +221,30 @@
         </form>
     </div>
 
+    <div id="customAlert" class="custom-alert-overlay">
+        <div class="custom-alert-box">
+            <p id="alertMessage"></p>
+            <button id="alertCloseBtn">ตกลง</button>
+        </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
+        const customAlert = document.getElementById('customAlert');
+        const alertMessage = document.getElementById('alertMessage');
+        const alertCloseBtn = document.getElementById('alertCloseBtn');
+
+        function showAlert(message) {
+            alertMessage.textContent = message;
+            customAlert.classList.add('visible');
+        }
+
+        alertCloseBtn.addEventListener('click', () => {
+            customAlert.classList.remove('visible');
+        });
+
         const firebaseConfig = {
             apiKey: "AIzaSyD9fCwQ8CiJ_sCP4oL0DpGGDs4A-wCLvc8",
             authDomain: "feed-e179b.firebaseapp.com",
@@ -183,42 +258,72 @@
 
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        
         const form = document.getElementById('feedback-form');
         const submitButton = form.querySelector('button[type="submit"]');
         const originalButtonText = submitButton.textContent;
+        
+        const projectSelect = document.getElementById('project');
+        const houseNumberPrefix = document.getElementById('house-number-prefix');
+        const houseNumberSuffixInput = document.getElementById('house-number-suffix');
+
+        projectSelect.addEventListener('change', (e) => {
+            const selectedProject = e.target.value;
+            houseNumberSuffixInput.value = '';
+
+            if (selectedProject === "ARKIN VIBHAVIDI 84") {
+                houseNumberPrefix.textContent = '35/';
+                houseNumberSuffixInput.placeholder = 'กรอกเลขที่บ้านส่วนท้าย';
+                houseNumberSuffixInput.disabled = false;
+            } else if (selectedProject === "ARKIN ONE DHUPATEME") {
+                houseNumberPrefix.textContent = '1/';
+                houseNumberSuffixInput.placeholder = 'กรอกเลขที่บ้านส่วนท้าย';
+                houseNumberSuffixInput.disabled = false;
+            } else {
+                houseNumberPrefix.textContent = '--/--';
+                houseNumberSuffixInput.placeholder = 'เลือกโครงการก่อน';
+                houseNumberSuffixInput.disabled = true;
+            }
+        });
 
         form.addEventListener('submit', e => {
             e.preventDefault();
-            submitButton.disabled = true;
-            submitButton.textContent = 'กำลังส่งข้อมูล...';
-
+            
             const projectValue = document.getElementById('project').value;
             if (!projectValue) {
-                alert("กรุณาเลือกโครงการ");
-                submitButton.disabled = false;
-                submitButton.textContent = originalButtonText;
+                showAlert("กรุณาเลือกโครงการ");
                 return;
             }
 
+            if (!houseNumberSuffixInput.disabled && !houseNumberSuffixInput.value.trim()) {
+                showAlert('กรุณากรอกบ้านเลขที่ให้สมบูรณ์');
+                return;
+            }
+            
             const repairSpeedValue = document.getElementById('repair-speed-quality').value;
             const serviceQualityValue = document.getElementById('service-quality').value;
             const communicationValue = document.getElementById('communication').value;
             const repairQualityValue = document.getElementById('repair-quality').value;
 
             if (!repairSpeedValue || !serviceQualityValue || !communicationValue || !repairQualityValue) {
-                alert("กรุณาเลือกคะแนนให้ครบทุกหัวข้อการประเมิน");
-                submitButton.disabled = false;
-                submitButton.textContent = originalButtonText;
+                showAlert("กรุณาเลือกคะแนนให้ครบทุกหัวข้อการประเมิน");
                 return;
             }
+            
+            submitButton.disabled = true;
+            submitButton.textContent = 'กำลังส่งข้อมูล...';
+            
+            const fullHouseNumber = !houseNumberSuffixInput.disabled ? 
+                houseNumberPrefix.textContent + houseNumberSuffixInput.value : '';
 
+            // Ensure the keys here match the labels in the HTML for correct data logging
             const formDataToSubmit = {
-                "บ้านเลขที่": document.getElementById('house-number').value,
+                "บ้านเลขที่": fullHouseNumber,
                 "โครงการ": projectValue,
-                "ความรวดเร็วในการรับเรื่องแจ้งซ่อม": repairSpeedValue,
-                "คุณภาพบริการ": serviceQualityValue,
-                "การสื่อสารชัดเจน": communicationValue,
-                "คุณภาพการซ่อม": repairQualityValue,
+                "ความรวดเร็วในการตอบรับและประสานงาน": repairSpeedValue,
+                "ความเป็นมืออาชีพและอัธยาศัยในการให้บริการ": serviceQualityValue,
+                "คุณภาพและความเรียบร้อยของงานซ่อม": repairQualityValue,
+                "การสื่อสารและให้ข้อมูลที่ชัดเจน": communicationValue,
                 "ข้อเสนอแนะ": document.getElementById('comments').value,
                 "เวลาที่ส่ง(Client)": new Date().toISOString()
             };
@@ -229,12 +334,13 @@
             submissionsRef.push(formDataToSubmit)
                 .then(() => {
                     console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว!');
-                    alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณครับ');
+                    showAlert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณครับ');
                     form.reset();
+                    projectSelect.dispatchEvent(new Event('change'));
                 })
                 .catch(error => {
                     console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูลไป Firebase:', error);
-                    alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + error.message);
+                    showAlert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + error.message);
                 })
                 .finally(() => {
                     submitButton.disabled = false;
