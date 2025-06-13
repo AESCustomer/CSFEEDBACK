@@ -1,16 +1,10 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <title>แบบประเมินเจ้าหน้าที่บริการหลังการขาย (Firebase)</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>แบบประเมินเจ้าหน้าที่</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-
     <style>
         * {
             box-sizing: border-box;
@@ -50,7 +44,9 @@
             margin-bottom: 8px;
             font-weight: 600;
         }
-        input, select, textarea {
+        input[type="text"],
+        select,
+        textarea {
             width: 100%;
             padding: 14px;
             border-radius: 10px;
@@ -63,7 +59,7 @@
             resize: vertical;
             min-height: 100px;
         }
-        button {
+        button[type="submit"] {
             background-color: #000000;
             color: white;
             font-size: 18px;
@@ -74,22 +70,35 @@
             width: 100%;
             cursor: pointer;
             font-weight: bold;
-            transition: background-color 0.3s ease, opacity 0.3s ease;
+            transition: background-color 0.3s ease;
         }
-        button:hover {
+        button[type="submit"]:hover {
             background-color: #333333;
         }
-        button:disabled {
-            background-color: #999;
+        button[type="submit"]:disabled {
+            background-color: #cccccc;
+            color: #666666;
             cursor: not-allowed;
-            opacity: 0.7;
         }
         @media (max-width: 600px) {
-            body { padding: 10px; }
-            .form-container { padding: 25px 20px; }
-            h2 { font-size: 20px; }
-            input, select, textarea, button { font-size: 16px; }
-            .logo img { max-width: 180px; }
+            body {
+                padding: 10px;
+            }
+            .form-container {
+                padding: 25px 20px;
+            }
+            h2 {
+                font-size: 20px;
+            }
+            input[type="text"],
+            select,
+            textarea,
+            button[type="submit"] {
+                font-size: 16px;
+            }
+            .logo img {
+                max-width: 180px;
+            }
         }
     </style>
 </head>
@@ -110,22 +119,44 @@
             <label for="house-number">บ้านเลขที่:</label>
             <input type="text" id="house-number" name="houseNumber" required>
 
-            <label for="service-quality">1. คุณภาพการบริการ:</label>
-            <select id="service-quality" name="serviceQuality" required>
+            <label for="repair-speed-quality">1. ความรวดเร็วในการรับเรื่องแจ้งซ่อม:</label>
+            <select id="repair-speed-quality" name="repairSpeedQuality" required>
                 <option value="">เลือกคะแนน</option>
-                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
             </select>
 
-            <label for="communication">2. การสื่อสารชัดเจน:</label>
-            <select id="communication" name="communication" required>
+            <label for="service-quality">2. คุณภาพการบริการ:</label>
+            <select id="service-quality" name="serviceQuality" required>
                 <option value="">เลือกคะแนน</option>
-                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
             </select>
 
             <label for="repair-quality">3. คุณภาพการซ่อม:</label>
-            <select id="repair-quality" name="repairQuality" required>
+            <select id="repair-quality" name="repairQualityRating" required>
                 <option value="">เลือกคะแนน</option>
-                <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+
+            <label for="communication">4. การสื่อสารชัดเจน:</label>
+            <select id="communication" name="communicationRating" required>
+                <option value="">เลือกคะแนน</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
             </select>
 
             <label for="comments">ข้อเสนอแนะ:</label>
@@ -135,8 +166,10 @@
         </form>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <script>
-        // ***** ข้อมูล Firebase Config ของคุณถูกวางไว้ที่นี่เรียบร้อยแล้ว *****
         const firebaseConfig = {
             apiKey: "AIzaSyD9fCwQ8CiJ_sCP4oL0DpGGDs4A-wCLvc8",
             authDomain: "feed-e179b.firebaseapp.com",
@@ -148,51 +181,64 @@
             measurementId: "G-8QCJTFQGMQ"
         };
 
-        // เริ่มต้นการเชื่อมต่อ Firebase
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore(); // เริ่มต้น Firestore
-
-        // จัดการการส่งฟอร์ม
+        const database = firebase.database();
         const form = document.getElementById('feedback-form');
         const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
 
         form.addEventListener('submit', e => {
-            e.preventDefault(); // ป้องกันการ submit ฟอร์มแบบปกติ
-
-            // ปิดการใช้งานปุ่มและเปลี่ยนข้อความเพื่อป้องกันการกดซ้ำ
+            e.preventDefault();
             submitButton.disabled = true;
-            submitButton.textContent = 'กำลังส่ง...';
+            submitButton.textContent = 'กำลังส่งข้อมูล...';
 
-            // สร้าง Object ของข้อมูลจากฟอร์ม
-            // แปลงค่าคะแนนเป็นตัวเลข (Integer) เพื่อการจัดเก็บข้อมูลที่ดี
-            const formData = {
-                project: document.getElementById('project').value,
-                houseNumber: document.getElementById('house-number').value,
-                serviceQuality: parseInt(document.getElementById('service-quality').value, 10),
-                communication: parseInt(document.getElementById('communication').value, 10),
-                repairQuality: parseInt(document.getElementById('repair-quality').value, 10),
-                comments: document.getElementById('comments').value,
-                submissionTime: firebase.firestore.FieldValue.serverTimestamp() // ใช้เวลาของ Server
+            const projectValue = document.getElementById('project').value;
+            if (!projectValue) {
+                alert("กรุณาเลือกโครงการ");
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+                return;
+            }
+
+            const repairSpeedValue = document.getElementById('repair-speed-quality').value;
+            const serviceQualityValue = document.getElementById('service-quality').value;
+            const communicationValue = document.getElementById('communication').value;
+            const repairQualityValue = document.getElementById('repair-quality').value;
+
+            if (!repairSpeedValue || !serviceQualityValue || !communicationValue || !repairQualityValue) {
+                alert("กรุณาเลือกคะแนนให้ครบทุกหัวข้อการประเมิน");
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+                return;
+            }
+
+            const formDataToSubmit = {
+                "บ้านเลขที่": document.getElementById('house-number').value,
+                "โครงการ": projectValue,
+                "ความรวดเร็วในการรับเรื่องแจ้งซ่อม": repairSpeedValue,
+                "คุณภาพบริการ": serviceQualityValue,
+                "การสื่อสารชัดเจน": communicationValue,
+                "คุณภาพการซ่อม": repairQualityValue,
+                "ข้อเสนอแนะ": document.getElementById('comments').value,
+                "เวลาที่ส่ง(Client)": new Date().toISOString()
             };
 
-            console.log('ข้อมูลที่จะส่งไปยัง Firestore:', formData);
+            console.log('ข้อมูลที่จะส่งไป Firebase:', formDataToSubmit);
 
-            // เพิ่มข้อมูลลงใน Collection ชื่อ "feedback"
-            // Firestore จะสร้าง ID ของเอกสาร (document) ให้โดยอัตโนมัติ
-            db.collection("feedback").add(formData)
-                .then((docRef) => {
-                    console.log("Document written with ID: ", docRef.id);
-                    alert("ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณค่ะ!");
-                    form.reset(); // ล้างข้อมูลในฟอร์ม
+            const submissionsRef = database.ref('submissions');
+            submissionsRef.push(formDataToSubmit)
+                .then(() => {
+                    console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว!');
+                    alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณครับ');
+                    form.reset();
                 })
-                .catch((error) => {
-                    console.error("Error adding document: ", error);
-                    alert("เกิดข้อผิดพลาดในการส่งแบบประเมิน: " + error.message);
+                .catch(error => {
+                    console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูลไป Firebase:', error);
+                    alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + error.message);
                 })
                 .finally(() => {
-                    // เปิดใช้งานปุ่มและคืนข้อความเดิม ไม่ว่าการส่งจะสำเร็จหรือล้มเหลว
                     submitButton.disabled = false;
-                    submitButton.textContent = 'ส่งแบบประเมิน';
+                    submitButton.textContent = originalButtonText;
                 });
         });
     </script>
