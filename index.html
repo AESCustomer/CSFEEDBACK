@@ -1,154 +1,319 @@
 <!DOCTYPE html>
+
 <html lang="th">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>แบบประเมิน</title>
 
-  <!-- ฟอนต์จาก Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
 
-  <style>
-    body {
-      font-family: 'Montserrat', 'Noto Sans Thai', sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-      font-size: 18px;
-    }
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    .form-container {
-      max-width: 550px;
-      margin: auto;
-      background: #ffffff;
-      padding: 35px;
-      border-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
+  <title>แบบประเมินเจ้าหน้าที่</title>
 
-    .logo {
-      margin-bottom: 10px;
-    }
 
-    .logo img {
-      max-width: 250px;
-      height: auto;
-      display: block;
-      margin: 0 auto 10px;
-    }
 
-    h2 {
-      font-size: 22px;
-      font-weight: 600;
-      margin-bottom: 30px;
-      letter-spacing: 1px;
-    }
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Noto+Sans+Thai:wght@400;600&display=swap" rel="stylesheet">
 
-    label {
-      display: block;
-      text-align: left;
-      margin-top: 20px;
-      margin-bottom: 8px;
-      font-weight: 600;
-      font-size: 18px;
-    }
 
-    input, select, textarea {
-      width: 100%;
-      padding: 14px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-      font-size: 18px;
-      font-family: 'Noto Sans Thai', sans-serif;
-    }
 
-    textarea {
-      resize: vertical;
-    }
+  <style>
 
-    button {
-      background-color: black;
-      color: white;
-      font-size: 18px;
-      padding: 14px;
-      border: none;
-      border-radius: 12px;
-      margin-top: 30px;
-      width: 100%;
-      cursor: pointer;
-      font-weight: bold;
-    }
+    * { box-sizing: border-box; }
 
-    button:hover {
-      background-color: #333;
-    }
-  </style>
+    body { font-family: 'Montserrat', 'Noto Sans Thai', sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; font-size: 18px; }
+
+    .form-container { max-width: 600px; margin: auto; background: #ffffff; padding: 35px 25px; border-radius: 20px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); }
+
+    .logo { text-align: center; margin-bottom: 25px; }
+
+    .logo img { max-width: 220px; height: auto; }
+
+    h2 { text-align: center; font-size: 22px; font-weight: 600; margin-bottom: 25px; }
+
+    label { display: block; margin-top: 20px; margin-bottom: 8px; font-weight: 600; }
+
+    input[type="text"], select, textarea { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #ccc; font-size: 17px; font-family: 'Noto Sans Thai', sans-serif; background-color: #fdfdfd; }
+
+    textarea { resize: vertical; min-height: 100px; }
+
+    button[type="submit"] { background-color: #000000; color: white; font-size: 18px; padding: 14px; border: none; border-radius: 12px; margin-top: 30px; width: 100%; cursor: pointer; font-weight: bold; transition: background-color 0.3s ease; }
+
+    button[type="submit"]:hover { background-color: #333333; }
+
+    button[type="submit"]:disabled { background-color: #cccccc; color: #666666; cursor: not-allowed; }
+
+
+
+    
+
+
+
+    @media (max-width: 600px) {
+
+      body { padding: 10px; }
+
+      .form-container { padding: 25px 20px; }
+
+      h2 { font-size: 20px; }
+
+      input[type="text"], select, textarea, button[type="submit"] { font-size: 16px; }
+
+      .logo img { max-width: 180px; }
+
+    }
+
+  </style>
+
 </head>
+
 <body>
-  <div class="form-container">
-    <div class="logo">
-      <img src="434338186_293481903773810_7491720142568291549_n.jpg" alt="โลโก้">
-    </div>
-    <h2>แบบประเมินเจ้าหน้าที่บริการหลังการขาย</h2>
-    <form id="feedback-form">
-      <label for="project">โครงการ:</label>
-      <select id="project" name="project" required>
-        <option value="">เลือกโครงการ</option>
-        <option value="ARKIN VIBHAVIDI 84">ARKIN VIBHAVIDI 84</option>
-        <option value="ARKIN ONE DHUPATEME">ARKIN ONE DHUPATEME</option>
-      </select>
 
-      <label for="house-number">บ้านเลขที่:</label>
-      <input type="text" id="house-number" name="house-number" required>
+  <div class="form-container">
 
-      <label for="service-quality">1. ความรวดเร็วในการรับเรื่องแจ้งซ่อม:</label>
-      <select id="service-quality" name="service-quality" required>
-        <option value="">เลือกคะแนน</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
+    <div class="logo">
 
-      <label for="communication">2. คุณภาพการบริการของเจ้าหน้าที่:</label>
-      <select id="communication" name="communication" required>
-        <option value="">เลือกคะแนน</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
+      <img src="434338186_293481903773810_7491720142568291549_n.jpg" alt="โลโก้">
 
-      <label for="repair-quality">3. คุณภาพงานซ่อมและความเรียบร้อย:</label>
-      <select id="repair-quality" name="repair-quality" required>
-        <option value="">เลือกคะแนน</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
+    </div>
 
-       <label for="repair-quality">4. การสื่อสารและให้ข้อมูลที่ชัดเจน:</label>
-      <select id="repair-quality" name="repair-quality" required>
-        <option value="">เลือกคะแนน</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-      </select>
+    <h2>แบบประเมินเจ้าหน้าที่บริการหลังการขาย</h2>
 
-      <label for="comments">ข้อเสนอแนะ:</label>
-      <textarea id="comments" name="comments" rows="4"></textarea>
+    <form id="feedback-form">
 
-      <button type="submit">ส่งแบบประเมิน</button>
-      
-    </form>
-  </div>
+      <label for="project">โครงการ:</label>
+
+      <select id="project" name="project" required>
+
+        <option value="">เลือกโครงการ</option>
+
+        <option value="ARKIN VIBHAVIDI 84">ARKIN VIBHAVIDI 84</option>
+
+        <option value="ARKIN ONE DHUPATEME">ARKIN ONE DHUPATEME</option>
+
+      </select>
+
+
+
+      <label for="house-number">บ้านเลขที่:</label>
+
+      <input type="text" id="house-number" name="houseNumber" required>
+
+
+
+      <label for="repair-speed-quality">1. ความรวดเร็วในการรับเรื่องแจ้งซ่อม:</label>
+
+      <select id="repair-speed-quality" name="repairSpeedQuality" required>
+
+        <option value="">เลือกคะแนน</option> <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+
+      </select>
+
+
+
+      <label for="service-quality">2. คุณภาพการบริการ:</label>
+
+      <select id="service-quality" name="serviceQuality" required>
+
+        <option value="">เลือกคะแนน</option>
+
+        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+
+      </select>
+
+
+
+      <label for="repair-quality">3. คุณภาพการซ่อม:</label>
+
+      <select id="repair-quality" name="repairQualityRating" required> <option value="">เลือกคะแนน</option>
+
+        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+
+      </select>
+
+
+
+      <label for="communication">4. การสื่อสารชัดเจน:</label>
+
+      <select id="communication" name="communicationRating" required> <option value="">เลือกคะแนน</option>
+
+        <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+
+      </select>
+
+
+
+
+
+      <label for="comments">ข้อเสนอแนะ:</label>
+
+      <textarea id="comments" name="comments" rows="4"></textarea>
+
+
+
+      <button type="submit">ส่งแบบประเมิน</button>
+
+    </form>
+
+  </div>
+
+
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+
+
+  <script>
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyD9fCwQ8CiJ_sCP4oL0DpGGDs4A-wCLvc8",
+
+      authDomain: "feed-e179b.firebaseapp.com",
+
+      databaseURL: "https://feed-e179b-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+      projectId: "feed-e179b",
+
+      storageBucket: "feed-e179b.appspot.com",
+
+      messagingSenderId: "790012789407",
+
+      appId: "1:790012789407:web:d48dc0a4e77edcf8a4d8aa",
+
+      measurementId: "G-8QCJTFQGMQ"
+
+    };
+
+
+
+    firebase.initializeApp(firebaseConfig);
+
+    const database = firebase.database();
+
+
+
+    const form = document.getElementById('feedback-form');
+
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    const originalButtonText = submitButton.textContent;
+
+
+
+    form.addEventListener('submit', e => {
+
+      e.preventDefault();
+
+      submitButton.disabled = true;
+
+      submitButton.textContent = 'กำลังส่งข้อมูล...';
+
+
+
+      const projectValue = document.getElementById('project').value;
+
+      if (!projectValue) { // ตรวจสอบว่า projectValue ไม่ใช่ค่าว่าง
+
+          alert("กรุณาเลือกโครงการ");
+
+          submitButton.disabled = false;
+
+          submitButton.textContent = originalButtonText;
+
+          return; 
+
+      }
+
+
+
+      const repairSpeedValue = document.getElementById('repair-speed-quality').value;
+
+      const serviceQualityValue = document.getElementById('service-quality').value;
+
+      const communicationValue = document.getElementById('communication').value;
+
+      const repairQualityValue = document.getElementById('repair-quality').value;
+
+
+
+      
+
+      if (!repairSpeedValue || !serviceQualityValue || !communicationValue || !repairQualityValue) {
+
+          alert("กรุณาเลือกคะแนนให้ครบทุกหัวข้อการประเมิน");
+
+          submitButton.disabled = false;
+
+          submitButton.textContent = originalButtonText;
+
+          return;
+
+      }
+
+
+
+      const formDataToSubmit = {
+
+        "บ้านเลขที่": document.getElementById('house-number').value,
+
+        "โครงการ": projectValue, 
+
+        "ความรวดเร็วในการรับเรื่องแจ้งซ่อม": repairSpeedValue,
+
+        "คุณภาพบริการ": serviceQualityValue,
+
+        "การสื่อสารชัดเจน": communicationValue,
+
+        "คุณภาพการซ่อม": repairQualityValue,
+
+        "ข้อเสนอแนะ": document.getElementById('comments').value,
+
+        "เวลาที่ส่ง(Client)": new Date().toISOString()
+
+      };
+
+
+
+      console.log('ข้อมูลที่จะส่งไป Firebase:', formDataToSubmit);
+
+
+
+      const submissionsRef = database.ref('submissions');
+
+      submissionsRef.push(formDataToSubmit)
+
+        .then(() => {
+
+          console.log('ข้อมูลถูกบันทึกไป Firebase เรียบร้อยแล้ว!');
+
+          alert('ส่งแบบประเมินเรียบร้อยแล้ว ขอบคุณครับ');
+
+          form.reset(); 
+
+        })
+
+        .catch(error => {
+
+          console.error('เกิดข้อผิดพลาดในการบันทึกข้อมูลไป Firebase:', error);
+
+          alert('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + error.message);
+
+        })
+
+        .finally(() => {
+
+          submitButton.disabled = false;
+
+          submitButton.textContent = originalButtonText;
+
+        });
+
+    });
+
+  </script>
+
 </body>
+
 </html>
