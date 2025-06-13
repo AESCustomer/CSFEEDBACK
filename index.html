@@ -186,7 +186,7 @@
 
             <label for="house-number-suffix">บ้านเลขที่:</label>
             <div class="house-number-group">
-                <span id="house-number-prefix" class="house-number-prefix">--/--</span>
+                <span id="house-number-prefix" class="house-number-prefix">--/</span>
                 <input type="text" id="house-number-suffix" name="houseNumberSuffix" required class="house-number-suffix-input" placeholder="เลือกโครงการก่อน" disabled>
             </div>
 
@@ -280,7 +280,7 @@
                 houseNumberSuffixInput.placeholder = 'กรอกเลขที่บ้านส่วนท้าย';
                 houseNumberSuffixInput.disabled = false;
             } else {
-                houseNumberPrefix.textContent = '--/--';
+                houseNumberPrefix.textContent = '--/';
                 houseNumberSuffixInput.placeholder = 'เลือกโครงการก่อน';
                 houseNumberSuffixInput.disabled = true;
             }
